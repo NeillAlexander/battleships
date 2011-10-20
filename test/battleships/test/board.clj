@@ -34,3 +34,14 @@
     (is (not (valid-square? board "A11")))
     (is (not (valid-square? board "J0")))
     (is (not (valid-square? board "J11")))))
+
+(deftest test-tagging
+  (let [board (make-board 10 10)]
+    (is (sq-tagged? (tag board :shelled "a1") "a1" :shelled))
+    (is (not (sq-tagged? (tag board :shelled "a1") "a2" :shelled)))))
+
+(deftest test-occupied
+  (let [board (make-board 10 10)]
+    (is (sq-empty? board "a1"))
+    (is (sq-occupied? (tag board :aircraft-carrier "a1") "a1"))
+    (is (not (sq-occupied? (tag board :shelled "a1") "a1")))))
