@@ -2,35 +2,35 @@
 
 ;; Data structures
 (defn make-board
-  "Create a new board of width w and height h."
+"Create a new board of width w and height h."
   [w h]
   {:width w,
    :height h,
    :squares (apply vector (take (* w h) (repeat 0)))})
 
-(defn make-ship [name key length bit]
-  {:name name, :key key, :length length, :bit bit})
+(defn make-ship [name key length]
+  {:name name, :key key, :length length})
 
 ;; Functions that manipulate the data structures
 (defn row
-  "return the row for coord, where coord like a3 (would return A)"
+"return the row for coord, where coord like a3 (would return A)"
   [coord]
   (Character/toUpperCase (first coord)))
 
 (defn column
-  "return the column part of the coord, where coord like a3"
+"return the column part of the coord, where coord like a3"
   [coord]
   ;; columns start at 1 so need to subtract 0 index vector.
   (Integer/parseInt (apply str (rest coord))))
 
 (defn row-to-int
-  "Convert row character (upper case) to an int for indexing."
+"Convert row character (upper case) to an int for indexing."
   [c]
   ;; Just subtract 65 from the character as int
   (- (int c) 65))
 
 (defn int-to-row
-  "Opposite conversion from row-to-int"
+"Opposite conversion from row-to-int"
   [n]
   (char (+ 65 n)))
 
@@ -53,7 +53,7 @@
 
 ;; functions that generate the indices of the squares when placing a ship
 (defmulti squares
-  "Works out the sequence of squares that will be used for the ship."
+"Works out the sequence of squares that will be used for the ship."
   (fn [coords length orientation] orientation))
 
 ;; horizontal orientation
@@ -79,10 +79,29 @@
      (between row-num 0 (dec height))
      (between col-num 0 (dec width)))))
 
+;; bit map used for board state
+(def tag-bits
+  {:shelled 0, :aircraft-carrier 1, :battleship 2, :destroyer 3, :submarine 4, :patrol-boat 5})
+
+(defn tag
+"Tag the square at coord with the tag, returning the updated board"
+  [{:keys [squares] :as board} coord tag]
+  (let [idx (transform board coord)
+        val (squares idx)
+        tag-bit (tag-bits tag)]
+    (if (bitmap-keys tag)
+      (assoc-in board [:squares] (assoc squares idx (bit-set val tag-bit))))))
+
+(defn tagged?
+"Check the coord to see if it is tagged."
+  [board coord tag])
+
 ;; functions for placing ship on board
 ;; need to be able to query for empty square
 ;; need to be able to set a square as occupied
 ;; need to be able to tell which ship occupies a square
-(defn empty-square? [board coord])
+(defn occupied-square? [{:keys [squares] :as board} coord]
+  )
 
-
+(defn empty-square? [board coord]
+  (not (occupied-square? board coord)))

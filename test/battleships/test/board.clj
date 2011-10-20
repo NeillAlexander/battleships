@@ -1,6 +1,6 @@
 (ns battleships.test.board
-  (:use [clojure.test])
-  (:require [battleships.board] :reload-all))
+  (:use [clojure.test]
+        [battleships.board]))
 
 
 (deftest test-transform-coords
