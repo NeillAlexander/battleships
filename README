@@ -1,10 +1,10 @@
 # battleships
 
-FIXME: write description
+An implementation of the game Battleships in Clojure.
+This is a toy project to do some practice.
 
 ## Usage
 
-FIXME: write
 
 ## License
 
