@@ -37,11 +37,33 @@
 
 (deftest test-tagging
   (let [board (make-board 10 10)]
-    (is (sq-tagged? (tag board :shelled "a1") "a1" :shelled))
-    (is (not (sq-tagged? (tag board :shelled "a1") "a2" :shelled)))))
+    (is (sq-tagged? (tag :shelled board "a1") "a1" :shelled))
+    (is (not (sq-tagged? (tag :shelled board "a1") "a2" :shelled)))))
 
 (deftest test-occupied
   (let [board (make-board 10 10)]
     (is (sq-empty? board "a1"))
-    (is (sq-occupied? (tag board :aircraft-carrier "a1") "a1"))
-    (is (not (sq-occupied? (tag board :shelled "a1") "a1")))))
+    (is (sq-occupied? (tag :aircraft-carrier board "a1") "a1"))
+    (is (not (sq-occupied? (tag :shelled board "a1") "a1")))))
+
+(deftest test-place-ship-horizontally
+  (let [ship (make-ship "test" :battleship 3)
+        board (place-ship ship (make-board 10 10) "a1" :h)]
+    (is (sq-occupied? board "a1"))
+    (is (sq-occupied? board "a2"))
+    (is (sq-occupied? board "a3"))
+    (is (sq-empty? board "a4"))
+    (is (sq-empty? board "b1"))
+    (is (sq-empty? board "b2"))
+    (is (sq-empty? board "b3"))))
+
+(deftest test-place-ship-vertically
+  (let [ship (make-ship "test" :battleship 3)
+        board (place-ship ship (make-board 10 10) "a1" :v)]
+    (is (sq-occupied? board "a1"))
+    (is (sq-occupied? board "b1"))
+    (is (sq-occupied? board "c1"))
+    (is (sq-empty? board "d1"))
+    (is (sq-empty? board "a2"))
+    (is (sq-empty? board "b2"))
+    (is (sq-empty? board "c2"))))

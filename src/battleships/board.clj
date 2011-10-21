@@ -91,14 +91,12 @@
 
 (defn sq-value [board coord]
   ((:squares board) (sq-index board coord)))
-
+ 
 (defn tag
   "Tag the square at coord with the tag, returning the updated board"
-  [{:keys [squares] :as board} tag coord]
-  (let [tag-bit (tag-bits tag)]
-    (if tag-bit
-      (assoc-in board [:squares] (assoc squares (sq-index board coord)
-                                        (bit-set (sq-value board coord) tag-bit))))))
+  [tag {:keys [squares] :as board} coord]
+  (assoc-in board [:squares] (assoc squares (sq-index board coord)
+                                    (bit-set (sq-value board coord) (tag-bits tag)))))
 
 (defn sq-tagged?
   "Check the coord to see if it is tagged."
@@ -113,12 +111,10 @@
 (defn sq-empty? [board coord]
   (not (sq-occupied? board coord)))
 
-(comment Work in progress - need to work out how to tag
-         (defn place-ship
-           "Tags the squares with the details of the ship, if not occupied"
-           [{:keys [length] :as ship} board coord orientation]
-           (let [sqrs (squares coord length orientation)]
-             (if (and (every? (partial sq-empty? board) sqrs)
-                      (every? (partial valid-square? board) sqrs))
-               ;; todo - need to tag each of the sqrs in board
-               ))))
+(defn place-ship
+  "Tags the squares with the details of the ship, if not occupied"
+  [{:keys [length key] :as ship} board coord orientation]
+  (let [sqrs (squares coord length orientation)]
+    (if (and (every? (partial sq-empty? board) sqrs)
+             (every? (partial valid-square? board) sqrs))
+      (reduce (partial tag key) board sqrs))))
