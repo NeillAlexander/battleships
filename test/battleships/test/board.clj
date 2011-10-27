@@ -67,3 +67,16 @@
     (is (sq-empty? board "a2"))
     (is (sq-empty? board "b2"))
     (is (sq-empty? board "c2"))))
+
+(deftest test-fire-shell
+  (let [ship (make-ship "test" :battleship 3)
+        board (place-ship ship (make-board 10 10) "a1" :v)]
+    (is (not (hit? board "a1")))
+    (is (hit? (fire-shell board "a1") "a1"))
+    (is (not (hit? (fire-shell board "a2") "a2")))))
+
+(deftest test-ship-key-at
+  (let [ship (make-ship "test" :battleship 3)
+        board (place-ship ship (make-board 10 10) "a1" :v)]
+    (is (= (ship-key-at board "a1") :battleship))
+    (is (nil? (ship-key-at board "a2")))))

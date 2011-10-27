@@ -83,8 +83,15 @@
 
 ;; these are the low level tagging functions on which to build things like occupied? etc
 ;; bit map used for board state
-(def tag-bits
-  {:shelled 0, :aircraft-carrier 1, :battleship 2, :destroyer 3, :submarine 4, :patrol-boat 5})
+
+;; the ships in the game
+(def ship-keys [:aircraft-carrier :battleship :destroyer :submarine :patrol-boat])
+
+;; all the tags
+(def tag-keys (into [:shelled] ship-keys))
+
+;; defines the bit for each tag
+(def tag-bits (into {} (map-indexed (fn [bit-idx key] [key bit-idx]) tag-keys)))
 
 (defn sq-index [board coord]
   (transform board coord))
@@ -118,3 +125,27 @@
     (if (and (every? (partial sq-empty? board) sqrs)
              (every? (partial valid-square? board) sqrs))
       (reduce (partial tag key) board sqrs))))
+
+(defn fire-shell
+  "This is the command for firing a shell at a square, specified by coord."
+  [board coord]
+  (tag :shelled board coord))
+
+(defn ship-key-at
+  "Returns the key for the ship at coord, or nil if none there."
+  [board coord]
+  (first (filter (partial sq-tagged? board coord) ship-keys)))
+
+(defn hit?
+  "Was there a ship hit at coord? If yes, return the key of the ship that was hit."
+  [board coord]
+  (if (and (sq-occupied? board coord) (sq-tagged? board coord :shelled))
+    (ship-key-at board coord)))
+
+
+;; can now create a board, add ships, shell, detect hits
+;; time to start putting together the game from core
+
+;; ship-keys should be created when the game is set up, rather than declared
+;; create the ships, pass them in, and init the bits dynamically
+;; :shelled is a special case, common to all games
