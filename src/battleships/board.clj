@@ -11,7 +11,7 @@
 (defn make-ship
   "key needs to match the tags"
   [name key length]
-  {:name name, :key key, :length length})
+  {:name name, :key key, :length length, :hits 0})
 
 ;; Functions that manipulate the data structures
 (defn row
@@ -143,9 +143,3 @@
     (ship-key-at board coord)))
 
 
-;; can now create a board, add ships, shell, detect hits
-;; time to start putting together the game from core
-
-;; ship-keys should be created when the game is set up, rather than declared
-;; create the ships, pass them in, and init the bits dynamically
-;; :shelled is a special case, common to all games

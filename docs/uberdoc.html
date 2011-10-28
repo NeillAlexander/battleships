@@ -2527,7 +2527,7 @@ $(document).ready(function() {
 
 })
 </script><title>battleships -- Marginalia</title></head><body><table><tr><td class="docs"><div class="header"><h1 class="project-name">battleships</h1><h2 class="project-version">1.0.0-SNAPSHOT</h2><br /><p>FIXME: write description</p>
-</div><div class="dependencies"><h3>dependencies</h3><table><tr><td class="dep-name">org.clojure/clojure</td><td class="dotted"><hr /></td><td class="dep-version">1.2.1</td></tr></table></div><div class="dependencies"><h3>dev dependencies</h3><table></table></div></td><td class="codes" style="text-align: center; vertical-align: middle;color: #666;padding-right:20px"><br /><br /><br />(this space intentionally left almost blank)</td></tr><tr><td class="docs"><div class="toc"><a name="toc"><h3>namespaces</h3></a><ul><li><a href="#battleships.board">battleships.board</a></li><li><a href="#battleships.core">battleships.core</a></li></ul></div></td><td class="codes">&nbsp;</td></tr><tr><td class="docs"><div class="docs-header"><a class="anchor" href="#battleships.board" name="battleships.board"><h1 class="project-name">battleships.board</h1><a class="toc-link" href="#toc">toc</a></a></div></td><td class="codes" /></tr><tr><td class="docs">
+</div><div class="dependencies"><h3>dependencies</h3><table><tr><td class="dep-name">org.clojure/clojure</td><td class="dotted"><hr /></td><td class="dep-version">1.2.1</td></tr></table></div><div class="dependencies"><h3>dev dependencies</h3><table></table></div></td><td class="codes" style="text-align: center; vertical-align: middle;color: #666;padding-right:20px"><br /><br /><br />(this space intentionally left almost blank)</td></tr><tr><td class="docs"><div class="toc"><a name="toc"><h3>namespaces</h3></a><ul><li><a href="#battleships.board">battleships.board</a></li><li><a href="#battleships.game">battleships.game</a></li><li><a href="#battleships.core">battleships.core</a></li></ul></div></td><td class="codes">&nbsp;</td></tr><tr><td class="docs"><div class="docs-header"><a class="anchor" href="#battleships.board" name="battleships.board"><h1 class="project-name">battleships.board</h1><a class="toc-link" href="#toc">toc</a></a></div></td><td class="codes" /></tr><tr><td class="docs">
 </td><td class="codes" /><pre class="brush: clojure">(ns battleships.board)</pre></tr><tr><td class="docs"><p>Create a new board of width w and height h.</p>
 
 <p>Data structures</p>
@@ -2538,7 +2538,7 @@ $(document).ready(function() {
    :squares (apply vector (take (* w h) (repeat 0)))})</pre></tr><tr><td class="docs"><p>key needs to match the tags</p>
 </td><td class="codes" /><pre class="brush: clojure">(defn make-ship
   [name key length]
-  {:name name, :key key, :length length})</pre></tr><tr><td class="docs"><p>return the row for coord, where coord like a3 (would return A)</p>
+  {:name name, :key key, :length length, :hits 0})</pre></tr><tr><td class="docs"><p>return the row for coord, where coord like a3 (would return A)</p>
 
 <p>Functions that manipulate the data structures</p>
 </td><td class="codes" /><pre class="brush: clojure">(defn row
@@ -2622,11 +2622,37 @@ need to be able to tell which ship occupies a square</p>
 </td><td class="codes" /><pre class="brush: clojure">(defn hit?
   [board coord]
   (if (and (sq-occupied? board coord) (sq-tagged? board coord :shelled))
-    (ship-key-at board coord)))</pre></tr><tr><td class="docs"><p>can now create a board, add ships, shell, detect hits
-time to start putting together the game from core</p>
-</td><td class="codes" /></tr><tr><td class="docs"><p>ship-keys should be created when the game is set up, rather than declared
-create the ships, pass them in, and init the bits dynamically
-:shelled is a special case, common to all games</p>
+    (ship-key-at board coord)))</pre></tr><tr><td class="spacer docs">&nbsp;</td><td class="codes" /></tr><tr><td class="docs"><div class="docs-header"><a class="anchor" href="#battleships.game" name="battleships.game"><h1 class="project-name">battleships.game</h1><a class="toc-link" href="#toc">toc</a></a></div></td><td class="codes" /></tr><tr><td class="docs">
+</td><td class="codes" /><pre class="brush: clojure">(ns battleships.game
+  (:require [battleships.board :as board]))</pre></tr><tr><td class="docs"><p>there is a special bit of knowledge required here for the ship keys but, since that is
+core to the game, I'm not going to bother defining the keys dynamically.</p>
+</td><td class="codes" /><pre class="brush: clojure">(defn new-ships []
+  (into {} (map (fn [v] [(:key v) v])
+                [(board/make-ship &quot;aircraft carrier&quot; :aircraft-carrier 5)
+                 (board/make-ship &quot;battleship&quot; :battleship 4)
+                 (board/make-ship &quot;destroyer&quot; :destroyer 3)
+                 (board/make-ship &quot;submarine&quot; :submarine 3)
+                 (board/make-ship &quot;patrol boat&quot; :patrol-boat 2)])))</pre></tr><tr><td class="docs">
+</td><td class="codes" /><pre class="brush: clojure">(defn new-player [name]
+  {:name name, :board (board/make-board 10 10), :ships (new-ships)})</pre></tr><tr><td class="docs">
+</td><td class="codes" /><pre class="brush: clojure">(defn new-game
+  ([]
+     (new-game &quot;Player 1&quot; &quot;Player 2&quot;))
+  ([p1-name p2-name]
+     {:player1 (new-player p1-name), :player2 (new-player p2-name)}))</pre></tr><tr><td class="docs"><p>Places the ship on the board and returns either the updated player, or nil if the move was invalid.</p>
+</td><td class="codes" /><pre class="brush: clojure">(defn place-ship
+  [{:keys [board ships] :as player} ship-key coord orientation]
+  (if-let [ship (ship-key ships)]
+    (if-let [new-board (board/place-ship ship board coord orientation)]
+      (assoc player :board new-board))))</pre></tr><tr><td class="docs">
+</td><td class="codes" /><pre class="brush: clojure">(defn all-ships-placed? [])</pre></tr><tr><td class="docs">
+</td><td class="codes" /><pre class="brush: clojure">(defn fire-shell [])</pre></tr><tr><td class="docs">
+</td><td class="codes" /><pre class="brush: clojure">(defn hit? [])</pre></tr><tr><td class="docs">
+</td><td class="codes" /><pre class="brush: clojure">(defn sunk? [])</pre></tr><tr><td class="docs"><p>write the functions that will then be called by core, which will contain the game loop
+e.g.
+place all ships
+player1 fire
+player2 fire etc</p>
 </td><td class="codes" /></tr><tr><td class="spacer docs">&nbsp;</td><td class="codes" /></tr><tr><td class="docs"><div class="docs-header"><a class="anchor" href="#battleships.core" name="battleships.core"><h1 class="project-name">battleships.core</h1><a class="toc-link" href="#toc">toc</a></a></div></td><td class="codes" /></tr><tr><td class="docs">
-</td><td class="codes" /><pre class="brush: clojure">(ns battleships.core)</pre></tr><tr><td class="spacer docs">&nbsp;</td><td class="codes" /></tr></table><div class="footer">Generated by <a href="https://github.com/fogus/marginalia">Marginalia</a>.&nbsp;&nbsp;Syntax highlighting provided by Alex Gorbatchev's <a href="http://alexgorbatchev.com/SyntaxHighlighter/">SyntaxHighlighter</a><div id="floating-toc"><ul><li class="floating-toc-li" id="floating-toc_battleships.board">battleships.board</li><li class="floating-toc-li" id="floating-toc_battleships.core">battleships.core</li></ul></div></div><script type="text/javascript">SyntaxHighlighter.defaults['gutter'] = false;
+</td><td class="codes" /><pre class="brush: clojure">(ns battleships.core)</pre></tr><tr><td class="spacer docs">&nbsp;</td><td class="codes" /></tr></table><div class="footer">Generated by <a href="https://github.com/fogus/marginalia">Marginalia</a>.&nbsp;&nbsp;Syntax highlighting provided by Alex Gorbatchev's <a href="http://alexgorbatchev.com/SyntaxHighlighter/">SyntaxHighlighter</a><div id="floating-toc"><ul><li class="floating-toc-li" id="floating-toc_battleships.board">battleships.board</li><li class="floating-toc-li" id="floating-toc_battleships.game">battleships.game</li><li class="floating-toc-li" id="floating-toc_battleships.core">battleships.core</li></ul></div></div><script type="text/javascript">SyntaxHighlighter.defaults['gutter'] = false;
        SyntaxHighlighter.all()</script></body></html>
