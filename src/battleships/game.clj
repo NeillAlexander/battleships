@@ -48,16 +48,21 @@
   "Returns updated player if there was a new hit, or nil if no change."
   [{:keys [board] :as player} coord]
   (if-let [ship-hit (board/hit? board coord)]
-    (update-in player [:ships ship-hit :hits] inc)))
+    (update-in player [:ships ship-hit :hits] conj coord)))
 
-(defn sunk? [])
+(defn sunk?
+  "Returns the ship key if it was sunk, else nil"
+  [{:keys [ships] :as player} ship-key]
+  (let [ship (ships ship-key)]
+    (if (= (:length ship) (count (:hits ship)))
+      ship-key)))
 
-(defn count-sunk-ships [])
+(defn count-sunk-ships
+  "Return the number of sunk ships."
+  [{:keys [ships] :as player}]
+  (reduce (fn [n ship] (if (sunk? player (:key ship)) (inc n) n)) 0 (vals ships)))
 
-(defn all-ships-sunk? [])
+(defn all-ships-sunk?
+  [{:keys [ships] :as player}]
+  (= (count-sunk-ships player) (count ships)))
 
-;; write the functions that will then be called by core, which will contain the game loop
-;; e.g.
-;; place all ships
-;; player1 fire
-;; player2 fire etc
