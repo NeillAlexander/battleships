@@ -36,7 +36,11 @@
   (and (every? :coord (vals ships))
        (every? :orientation (vals ships))))
 
-(defn fire-shell [])
+(defn fire-shell
+  "Returns the new board or nil if the square is invalid or already shelled."
+  [{:keys [board] :as player} coord]
+  (if (and (board/valid-square? board coord) (board/not-shelled? board coord))
+    (board/fire-shell board coord)))
 
 (defn hit? [])
 

@@ -81,6 +81,9 @@
      (between row-num 0 (dec height))
      (between col-num 0 (dec width)))))
 
+(defn invalid-square? [board coord]
+  (not (valid-square? board coord)))
+
 ;; these are the low level tagging functions on which to build things like occupied? etc
 ;; bit map used for board state
 
@@ -136,10 +139,17 @@
   [board coord]
   (first (filter (partial sq-tagged? board coord) ship-keys)))
 
+(defn shelled?
+  [board coord]
+  (sq-tagged? board coord :shelled))
+
+(defn not-shelled? [board coord]
+  (not (shelled? board coord)))
+
 (defn hit?
   "Was there a ship hit at coord? If yes, return the key of the ship that was hit."
   [board coord]
-  (if (and (sq-occupied? board coord) (sq-tagged? board coord :shelled))
+  (if (and (sq-occupied? board coord) (shelled? board coord))
     (ship-key-at board coord)))
 
 

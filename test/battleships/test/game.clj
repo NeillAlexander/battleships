@@ -1,4 +1,5 @@
 (ns battleships.test.game
+  (:require [battleships.board :as board])
   (:use [battleships.game]
         [clojure.test]))
 
@@ -21,3 +22,8 @@
                (place-ship :destroyer "c1" :h)
                (place-ship :patrol-boat "e1" :h))]
     (is (not (all-ships-placed? p2)))))
+
+(deftest test-fire-shell
+  (let [p1 (new-player "p1")]
+    (is (nil? (fire-shell p1 "a12")))
+    (is (board/shelled? (fire-shell p1 "a1") "a1"))))
