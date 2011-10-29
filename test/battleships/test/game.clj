@@ -26,4 +26,13 @@
 (deftest test-fire-shell
   (let [p1 (new-player "p1")]
     (is (nil? (fire-shell p1 "a12")))
-    (is (board/shelled? (fire-shell p1 "a1") "a1"))))
+    (is (board/shelled? (:board (fire-shell p1 "a1")) "a1"))))
+
+(deftest test-update-hits
+  (let [p1 (-> (new-player "p1")
+               (place-ship :aircraft-carrier "a1" :h)
+               (fire-shell "a1")
+               (fire-shell "a2")
+               (update-hits "a1"))]
+    (is (= 1 (get-in p1 [:ships :aircraft-carrier :hits])))
+    (is (= 2 (get-in (update-hits p1 "a2") [:ships :aircraft-carrier :hits])))))
