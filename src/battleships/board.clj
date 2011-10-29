@@ -11,7 +11,7 @@
 (defn make-ship
   "key needs to match the tags"
   [name key length]
-  {:name name, :key key, :length length, :hits 0})
+  {:name name, :key key, :length length, :hits 0, :coord nil, :orientation nil})
 
 ;; Functions that manipulate the data structures
 (defn row

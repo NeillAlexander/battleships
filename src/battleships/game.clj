@@ -26,9 +26,15 @@
   [{:keys [board ships] :as player} ship-key coord orientation]
   (if-let [ship (ship-key ships)]
     (if-let [new-board (board/place-ship ship board coord orientation)]
-      (assoc player :board new-board))))
+      (-> player
+          (assoc :board new-board)
+          (update-in [:ships ship-key] assoc :coord coord :orientation orientation)))))
 
-(defn all-ships-placed? [])
+(defn all-ships-placed?
+  "Check to make sure all the ships have a coordinate."
+  [{:keys [ships] :as player}]
+  (and (every? :coord (vals ships))
+       (every? :orientation (vals ships))))
 
 (defn fire-shell [])
 
