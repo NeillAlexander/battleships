@@ -47,7 +47,7 @@
     (+ (* row-num width) col-num)))
 
 ;; transform 0 to A1 etc
-(defmethod transform Integer
+(defmethod transform Long
   [{:keys [width height] :as board} index]
   (let [row-num (quot index width)
         col-num (rem index width)]
