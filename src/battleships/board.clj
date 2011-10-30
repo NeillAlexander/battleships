@@ -3,10 +3,12 @@
 ;; Data structures
 (defn make-board
   "Create a new board of width w and height h."
-  [w h]
-  {:width w,
-   :height h,
-   :squares (apply vector (take (* w h) (repeat 0)))})
+  ([]
+     (make-board 10 10))
+  ([w h]
+     {:width w,
+      :height h,
+      :squares (apply vector (take (* w h) (repeat 0)))}))
 
 (defn make-ship
   "key needs to match the tags"
@@ -125,8 +127,8 @@
   "Tags the squares with the details of the ship, if not occupied"
   [{:keys [length key] :as ship} board coord orientation]
   (let [sqrs (squares coord length orientation)]
-    (if (and (every? (partial sq-empty? board) sqrs)
-             (every? (partial valid-square? board) sqrs))
+    (if (and (every? (partial valid-square? board) sqrs)
+             (every? (partial sq-empty? board) sqrs))
       (reduce (partial tag key) board sqrs))))
 
 (defn fire-shell

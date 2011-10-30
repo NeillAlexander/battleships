@@ -33,7 +33,8 @@
     (is (not (valid-square? board "A0")))
     (is (not (valid-square? board "A11")))
     (is (not (valid-square? board "J0")))
-    (is (not (valid-square? board "J11")))))
+    (is (not (valid-square? board "J11")))
+    (is (not (valid-square? board "K6")))))
 
 (deftest test-tagging
   (let [board (make-board 10 10)]
@@ -80,3 +81,8 @@
         board (place-ship ship (make-board 10 10) "a1" :v)]
     (is (= (ship-key-at board "a1") :battleship))
     (is (nil? (ship-key-at board "a2")))))
+
+(deftest test-place-ship-vertically-out-of-bounds
+  (let [ship (make-ship "test" :aircraft-carrier 5)
+        board (place-ship ship (make-board 10 10) "g6" :v)]
+    (is (nil? board))))

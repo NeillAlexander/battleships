@@ -3,7 +3,11 @@
   (:require [battleships.board :as board]
             [battleships.game :as game]))
 
-(defrecord ShipPosition [coord orientation])
+(defrecord ShipPosition
+    [coord orientation]
+  Object
+  (toString [this]
+    (str "[" coord "," orientation "]")))
 
 (defprotocol Player
   "For a game of battleships we need to plug 2 Players into the engine."
