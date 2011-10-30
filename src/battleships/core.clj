@@ -10,7 +10,8 @@
      (let [board (board/make-board)
            squares (atom (zipmap (range 0 99)
                                  (map (partial board/transform board) (range 0 99))))
-           orientations [:h :v]]
+           orientations [:h :v]
+           num-shots (atom 0)]
        (reify engine/Player
          (get-name [this] name)
          (bot? [this] true)
@@ -25,9 +26,10 @@
              (swap! squares dissoc key)
              coord))
          (shot-result [this coord result]
+           (swap! num-shots inc)
            (println (str name " fires at " coord " --> " result)))
          (you-won [this]
-           (println (str name " won!")))
+           (println (str name " won in " @num-shots " shots!")))
          (you-lost [this]
            (println (str name " lost!")))))))
 
@@ -36,3 +38,4 @@
   [& args]
   (engine/play (make-random-cpu-player "cpu1")
                (make-random-cpu-player "cpu2")))
+

@@ -5,6 +5,295 @@ This is a toy project to do some practice.
 
 ## Usage
 
+At the minute when it is run it just kicks off a game between 2 cpu players, and outputs the result. I have bigger plans, however...
+
+$ lein trampoline run
+cpu1 trying to place aircraft carrier at [D8,:h]
+cpu1 trying to place aircraft carrier at [B10,:v]
+cpu1 trying to place battleship at [D7,:v]
+cpu1 trying to place destroyer at [D10,:v]
+cpu1 trying to place destroyer at [B1,:v]
+cpu1 trying to place submarine at [F6,:h]
+cpu1 trying to place submarine at [A9,:v]
+cpu1 trying to place patrol boat at [C1,:h]
+cpu1 trying to place patrol boat at [B5,:v]
+cpu2 trying to place aircraft carrier at [H7,:h]
+cpu2 trying to place aircraft carrier at [H6,:v]
+cpu2 trying to place aircraft carrier at [F2,:v]
+cpu2 trying to place battleship at [E9,:v]
+cpu2 trying to place destroyer at [F8,:v]
+cpu2 trying to place submarine at [H8,:v]
+cpu2 trying to place submarine at [I9,:v]
+cpu2 trying to place submarine at [D1,:h]
+cpu2 trying to place patrol boat at [J8,:v]
+cpu2 trying to place patrol boat at [J3,:v]
+cpu2 trying to place patrol boat at [C9,:v]
+cpu1 fires at G6 --> :miss
+cpu2 fires at I8 --> :miss
+cpu1 fires at E5 --> :miss
+cpu2 fires at F1 --> :miss
+cpu1 fires at H4 --> :miss
+cpu2 fires at D4 --> :miss
+cpu1 fires at I4 --> :miss
+cpu2 fires at E2 --> :miss
+cpu1 fires at A7 --> :miss
+cpu2 fires at E4 --> :miss
+cpu1 fires at A5 --> :miss
+cpu2 fires at B7 --> :miss
+cpu1 fires at H6 --> :miss
+cpu2 fires at D8 --> :miss
+cpu1 fires at I8 --> :miss
+cpu2 fires at F4 --> :miss
+cpu1 fires at E7 --> :miss
+cpu2 fires at E3 --> :miss
+cpu1 fires at H9 --> :hit
+cpu2 fires at D1 --> :hit
+cpu1 fires at E10 --> :miss
+cpu2 fires at I5 --> :miss
+cpu1 fires at F5 --> :miss
+cpu2 fires at B3 --> :miss
+cpu1 fires at H10 --> :miss
+cpu2 fires at D10 --> :hit
+cpu1 fires at G8 --> :hit
+cpu2 fires at G6 --> :miss
+cpu1 fires at E4 --> :miss
+cpu2 fires at G9 --> :miss
+cpu1 fires at H3 --> :miss
+cpu2 fires at J3 --> :miss
+cpu1 fires at J4 --> :miss
+cpu2 fires at I9 --> :miss
+cpu1 fires at D9 --> :hit
+cpu2 fires at A2 --> :miss
+cpu1 fires at G2 --> :hit
+cpu2 fires at F7 --> :hit
+cpu1 fires at E2 --> :miss
+cpu2 fires at C5 --> :hit
+cpu1 fires at B4 --> :miss
+cpu2 fires at A4 --> :miss
+cpu1 fires at H8 --> :hit
+cpu2 fires at G2 --> :miss
+cpu1 fires at E8 --> :miss
+cpu2 fires at J2 --> :miss
+cpu1 fires at B8 --> :miss
+cpu2 fires at B5 --> :patrol-boat
+cpu1 fires at H2 --> :hit
+cpu2 fires at B9 --> :hit
+cpu1 fires at C2 --> :miss
+cpu2 fires at A6 --> :miss
+cpu1 fires at I2 --> :hit
+cpu2 fires at J5 --> :miss
+cpu1 fires at I10 --> :miss
+cpu2 fires at H4 --> :miss
+cpu1 fires at I6 --> :miss
+cpu2 fires at F9 --> :miss
+cpu1 fires at J8 --> :miss
+cpu2 fires at I7 --> :miss
+cpu1 fires at H1 --> :miss
+cpu2 fires at H3 --> :miss
+cpu1 fires at J7 --> :miss
+cpu2 fires at D2 --> :miss
+cpu1 fires at A1 --> :miss
+cpu2 fires at B6 --> :miss
+cpu1 fires at E6 --> :miss
+cpu2 fires at B10 --> :hit
+cpu1 fires at C8 --> :miss
+cpu2 fires at D5 --> :miss
+cpu1 fires at E3 --> :miss
+cpu2 fires at A9 --> :hit
+cpu1 fires at C1 --> :miss
+cpu2 fires at C9 --> :submarine
+cpu1 fires at I7 --> :miss
+cpu2 fires at H7 --> :miss
+cpu1 fires at D5 --> :miss
+cpu2 fires at C8 --> :miss
+cpu1 fires at B2 --> :miss
+cpu2 fires at C1 --> :hit
+cpu1 fires at B1 --> :miss
+cpu2 fires at E1 --> :miss
+cpu1 fires at F2 --> :hit
+cpu2 fires at I4 --> :miss
+cpu1 fires at A9 --> :miss
+cpu2 fires at J6 --> :miss
+cpu1 fires at C6 --> :miss
+cpu2 fires at H5 --> :miss
+cpu1 fires at C7 --> :miss
+cpu2 fires at E6 --> :miss
+cpu1 fires at H7 --> :miss
+cpu2 fires at J1 --> :miss
+cpu1 fires at A3 --> :miss
+cpu2 fires at F5 --> :miss
+cpu1 fires at B5 --> :miss
+cpu2 fires at F2 --> :miss
+cpu1 fires at J1 --> :miss
+cpu2 fires at C6 --> :miss
+cpu1 fires at I9 --> :miss
+cpu2 fires at A7 --> :miss
+cpu1 fires at J5 --> :miss
+cpu2 fires at H1 --> :miss
+cpu1 fires at J9 --> :miss
+cpu2 fires at C2 --> :miss
+cpu1 fires at A4 --> :miss
+cpu2 fires at H6 --> :miss
+cpu1 fires at F4 --> :miss
+cpu2 fires at I2 --> :miss
+cpu1 fires at C3 --> :miss
+cpu2 fires at A3 --> :miss
+cpu1 fires at J2 --> :aircraft-carrier
+cpu2 fires at A1 --> :miss
+cpu1 fires at F3 --> :miss
+cpu2 fires at C4 --> :miss
+cpu1 fires at F1 --> :miss
+cpu2 fires at E8 --> :miss
+cpu1 fires at D8 --> :miss
+cpu2 fires at B2 --> :miss
+cpu1 fires at J6 --> :miss
+cpu2 fires at I10 --> :miss
+cpu1 fires at H5 --> :miss
+cpu2 fires at J7 --> :miss
+cpu1 fires at I3 --> :miss
+cpu2 fires at I6 --> :miss
+cpu1 fires at F7 --> :miss
+cpu2 fires at D6 --> :miss
+cpu1 fires at B10 --> :miss
+cpu2 fires at D7 --> :hit
+cpu1 fires at C9 --> :patrol-boat
+cpu2 fires at H9 --> :miss
+cpu1 fires at D3 --> :hit
+cpu2 fires at G7 --> :hit
+cpu1 fires at A10 --> :miss
+cpu2 fires at B8 --> :miss
+cpu1 fires at E1 --> :miss
+cpu2 fires at G10 --> :miss
+cpu1 fires at G5 --> :miss
+cpu2 fires at B4 --> :miss
+cpu1 fires at D4 --> :miss
+cpu2 fires at C10 --> :hit
+cpu1 fires at B9 --> :miss
+cpu2 fires at G3 --> :miss
+cpu1 fires at D2 --> :hit
+cpu2 fires at I3 --> :miss
+cpu1 fires at F9 --> :hit
+cpu2 fires at G5 --> :miss
+cpu1 fires at C10 --> :miss
+cpu2 fires at G1 --> :miss
+cpu1 fires at A2 --> :miss
+cpu2 fires at J4 --> :miss
+cpu1 fires at C5 --> :miss
+cpu2 fires at A8 --> :miss
+cpu1 fires at E9 --> :hit
+cpu2 fires at A10 --> :miss
+cpu1 fires at G7 --> :miss
+cpu2 fires at F10 --> :hit
+cpu1 fires at G1 --> :miss
+cpu2 fires at A5 --> :miss
+cpu1 fires at F6 --> :miss
+cpu2 fires at H8 --> :miss
+cpu1 fires at B7 --> :miss
+cpu2 fires at E9 --> :miss
+cpu1 fires at G3 --> :miss
+cpu2 fires at D9 --> :miss
+cpu1 fires at F10 --> :miss
+cpu2 fires at C3 --> :miss
+cpu1 fires at D10 --> :miss
+cpu2 fires at H10 --> :miss
+cpu1 fires at D7 --> :miss
+cpu2 fires at G8 --> :miss
+cpu1 fires at B6 --> :miss
+cpu2 fires at F8 --> :miss
+cpu1 fires at I5 --> :miss
+cpu2 fires at F6 --> :miss
+cpu1 fires at J3 --> :miss
+cpu2 fires at G4 --> :miss
+cpu1 fires at D6 --> :miss
+cpu2 fires at J8 --> :miss
+cpu1 fires at G10 --> :miss
+cpu2 fires at D3 --> :miss
+cpu1 fires at F8 --> :destroyer
+cpu2 fires at E7 --> :battleship
+cpu1 fires at A6 --> :miss
+cpu2 fires at I1 --> :miss
+cpu1 fires at A8 --> :miss
+cpu2 fires at E10 --> :aircraft-carrier
+cpu1 fires at I1 --> :miss
+cpu2 fires at J9 --> :miss
+cpu1 fires at D1 --> :submarine
+cpu2 fires at H2 --> :miss
+cpu1 fires at B3 --> :miss
+cpu2 fires at B1 --> :destroyer
+cpu2 won in 96 shots!
+cpu1 lost!
+
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+
 
 ## License
 
