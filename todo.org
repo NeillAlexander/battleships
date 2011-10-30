@@ -1,17 +1,20 @@
-* TODO do some analysis to work out the stats for average number of shots to win etc
-** TODO Need to provide built in game stat support rather than relying on player implementation
-** TODO plot a graph using incanter to show this - acts as benchmark for improving
-* TODO write the server which will allow people to submit a player for evaluation
+* TODO write a support namespace which provides functions for submitting to the server
+** TODO should have a verify function
+To ensure that the implementation works before sending.
+** TODO should have a submit function
 ** TODO Solve the problem of providing a map implementation of the player
 i.e. need to be able to read it in with the reader, so can't use
 records etc
+* TODO write the server which will allow people to submit a player for evaluation
 * TODO in server keep track of the best results
 ** TODO win / loss ration
 ** TODO number of shots
 *** TODO avg / mean / median / standard deviation etc
 This will provide a way to rank players.
+* TODO do some analysis to work out the stats for average number of shots to win etc
+** TODO Need to provide built in game stat support rather than relying on player implementation
+** TODO plot a graph using incanter to show this - acts as benchmark for improving
 * TODO write a web front end for viewing the server stats
-* TODO write a namespace which provides functions for submitting to the server
 * TODO keep track of all games in server - enable replaying to watch tactics
 * TODO provide a way to have a tournament
 * TODO in tournament mode, provide a way to watch players go against each other
