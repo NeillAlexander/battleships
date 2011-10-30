@@ -106,32 +106,43 @@
                                         (game/update-hits updated-player-data coord)
                                         updated-player-data)] 
               {:updated-game (assoc game opponent-key updated-player-data),
-               :result result}))
+               :result result
+               :coord coord}))
           (recur (inc num-attempts) player-data board)))
       {:updated-game (assoc-in game [player-key :failed] true)
-       :result nil})))
+       :result nil
+       :coord nil})))
 
 (defn run-game-loop
   "The main loop that asks for moves until someone wins or a bot exceeds the number of allowed errors"
   [game player1 player2]
   (loop [game game
-         turns (cycle [:player1 player1 :player2 player2])
-         player-key (first turns)
-         player-impl (second turns)
-         opponent-key (nth turns 2)
-         opponent-impl (nth turns 3)]
-    ;; fire shell at opponent
-    (if-let [{:keys [updated-game result]} (fire-at-opponent game player-impl player-key opponent-key)]
-      ;; successfully fired
-      ;; did it hit?
-      ;; did it sink anything?
-      ;; if it sunk something, have I won?
-      ;; shot-result (to let bot update state)
-      ;; recur for opponent (drop 2 from turns)      
-      updated-game
-      ;; firing failed - opponent wins
-      nil)
-    ))
+         turns (cycle [:player1 player1 :player2 player2])]
+    (let [player-key (first turns)
+          player-impl (second turns)
+          opponent-key (nth turns 2)
+          opponent-impl (nth turns 3)]
+      ;; fire shell at opponent
+      (if-let [{:keys [updated-game result coord]}
+               (fire-at-opponent game player-impl player-key opponent-key)]
+        (if-not (get-in updated-game [player-key :failed])
+          (if result
+            (let [opponent-data (updated-game opponent-key)
+                  sunk (game/sunk? opponent-data result)]
+              ;; call back with the result, :hit, :miss or ship if sunk
+              (shot-result player-impl coord (if sunk sunk :hit))
+              (if sunk
+                ;; if it sunk something, have I won?
+                (if (game/all-ships-sunk? opponent-data)
+                  (notify-winning-player player-key opponent-key player1 player2)
+                  (recur updated-game (drop 2 turns)))
+                (recur updated-game (drop 2 turns))))
+            ;; missed - continue with next player
+            (do
+              (shot-result player-impl coord :miss)
+              (recur updated-game (drop 2 turns))))
+          ;; firing failed - opponent wins
+          (finished game player1 player2))))))
 
 (defn play
   "Call this to start a new game with the 2 players."
@@ -142,6 +153,3 @@
     (if (ship-placement-success? game)
       (run-game-loop game player1 player2)
       (finished game player1 player2))))
-
-
-;; TODO: factor out the code that retries something 100 times for a bot
