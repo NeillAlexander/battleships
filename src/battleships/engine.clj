@@ -92,9 +92,46 @@
                           (you-lost player2-impl))
      :else (throw (IllegalStateException. "Unknown finishing condition")))))
 
+(defn fire-at-opponent
+  "Fire a shell at opponent, returning map of {:result :updated-game}"
+  [game player-impl player-key opponent-key]
+  (loop [num-attempts 0
+         player-data (game opponent-key)
+         board (player-data :board)]
+    (if-not (and (> num-attempts 100) (bot? player-impl))
+      (let [coord (next-shot player-impl)]
+        (if-let [updated-player-data (game/fire-shell player-data coord)]
+          (let [result (board/hit? (updated-player-data :board) coord)]
+            (let [updated-player-data (if result
+                                        (game/update-hits updated-player-data coord)
+                                        updated-player-data)] 
+              {:updated-game (assoc game opponent-key updated-player-data),
+               :result result}))
+          (recur (inc num-attempts) player-data board)))
+      {:updated-game (assoc-in game [player-key :failed] true)
+       :result nil})))
+
 (defn run-game-loop
   "The main loop that asks for moves until someone wins or a bot exceeds the number of allowed errors"
-  [game player1 player2])
+  [game player1 player2]
+  (loop [game game
+         turns (cycle [:player1 player1 :player2 player2])
+         player-key (first turns)
+         player-impl (second turns)
+         opponent-key (nth turns 2)
+         opponent-impl (nth turns 3)]
+    ;; fire shell at opponent
+    (if-let [{:keys [updated-game result]} (fire-at-opponent game player-impl player-key opponent-key)]
+      ;; successfully fired
+      ;; did it hit?
+      ;; did it sink anything?
+      ;; if it sunk something, have I won?
+      ;; shot-result (to let bot update state)
+      ;; recur for opponent (drop 2 from turns)      
+      updated-game
+      ;; firing failed - opponent wins
+      nil)
+    ))
 
 (defn play
   "Call this to start a new game with the 2 players."
@@ -107,11 +144,4 @@
       (finished game player1 player2))))
 
 
-
-
-
-
-
-
-
-
+;; TODO: factor out the code that retries something 100 times for a bot
