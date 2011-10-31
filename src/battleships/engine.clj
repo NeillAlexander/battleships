@@ -17,10 +17,8 @@
     "Must return true if this is a bot.")
   (ship-position [this ship]
     "Return the ShipPosition for the ship. This will be called for each ship until all ships are placed on board.")
-  (next-shot [this]
+  (next-shot [this player-context]
     "Return the coordinate for the next shot. Will be called until a valid coord is returned.")
-  (shot-result [this coord result]
-    "Called after the result of the shot is known. Result will be either :hit, :miss, or one of the ship keys if the ship was sunk e.g. :aircraft-carrier.")
   (you-won [this]
     "Called when this player won the game.")
   (you-lost [this]
@@ -73,8 +71,48 @@
     (you-won winner)
     (you-lost loser)))
 
+(defn new-player-context [game player-key]
+  (assoc-in game [player-key :context]
+            {:last-shot nil, :last-result nil, :hits [],
+             :misses [], :ships-sunk []}))
+
+(defn calc-result [result sunk]
+  (cond
+   (and result sunk) sunk
+   result :hit
+   :else :miss))
+
+(defn update-hits [hits coord result sunk]
+  (if result
+    (conj hits coord)
+    hits))
+
+(defn update-misses [misses coord result]
+  (if-not result
+    (conj misses coord)))
+
+(defn update-ships-sunk [ships-sunk sunk]
+  (if sunk
+    (conj ships-sunk sunk)
+    ships-sunk))
+
+(defn update-player-context
+  "Update the player context with the result of the last shot."
+  [game player-key coord result sunk]
+  (let [context (get-in game [player-key :context])
+        hits (update-hits (:hits context) coord result sunk)
+        misses (update-misses (:misses context) coord result)
+        ships-sunk (update-ships-sunk (:ships-sunk context) sunk)]
+    (-> (assoc-in game [player-key :context :last-shot] coord)
+        (assoc-in [player-key :context :last-result] (calc-result result sunk))
+        (assoc-in [player-key :context :hits] hits)
+        (assoc-in [player-key :context :misses] misses)
+        (assoc-in [player-key :context :ships-sunk] ships-sunk))))
+
 (defn init-game [player1 player2]
   (-> (game/new-game (get-name player1) (get-name player2))
+      (new-player-context :player1)
+      (new-player-context :player2)
       (place-ships :player1 player1)
       (place-ships :player2 player2)))
 
@@ -103,18 +141,26 @@
          player-data (game opponent-key)
          board (player-data :board)]
     (if-not (and (> num-attempts 100) (bot? player-impl))
-      (let [coord (next-shot player-impl)]
+      (let [player-context (get-in game [player-key :context])
+            coord (next-shot player-impl player-context)]
         (if-let [updated-player-data (game/fire-shell player-data coord)]
-          (let [result (board/hit? (updated-player-data :board) coord)]
-            (let [updated-player-data (if result
-                                        (game/update-hits updated-player-data coord)
-                                        updated-player-data)] 
-              {:updated-game (assoc game opponent-key updated-player-data),
-               :result result
-               :coord coord}))
+          (let [result (board/hit? (updated-player-data :board) coord)
+                updated-player-data (if result
+                                      (game/update-hits updated-player-data coord)
+                                      updated-player-data)
+                sunk (game/sunk? updated-player-data result)] 
+            {:updated-game (update-player-context (assoc game opponent-key updated-player-data)
+                                                  player-key
+                                                  coord
+                                                  result
+                                                  sunk),
+             :result result
+             :sunk sunk
+             :coord coord})
           (recur (inc num-attempts) player-data board)))
       {:updated-game (assoc-in game [player-key :failed] true)
        :result nil
+       :sunk nil
        :coord nil})))
 
 (defn run-game-loop
@@ -127,14 +173,11 @@
           opponent-key (nth turns 2)
           opponent-impl (nth turns 3)]
       ;; fire shell at opponent
-      (if-let [{:keys [updated-game result coord]}
+      (if-let [{:keys [updated-game result coord sunk]}
                (fire-at-opponent game player-impl player-key opponent-key)]
         (if-not (get-in updated-game [player-key :failed])
           (if result
-            (let [opponent-data (updated-game opponent-key)
-                  sunk (game/sunk? opponent-data result)]
-              ;; call back with the result, :hit, :miss or ship if sunk
-              (shot-result player-impl coord (if sunk sunk :hit))
+            (let [opponent-data (updated-game opponent-key)]
               (if sunk
                 ;; if it sunk something, have I won?
                 (if (game/all-ships-sunk? opponent-data)
@@ -142,9 +185,7 @@
                   (recur updated-game (drop 2 turns)))
                 (recur updated-game (drop 2 turns))))
             ;; missed - continue with next player
-            (do
-              (shot-result player-impl coord :miss)
-              (recur updated-game (drop 2 turns))))
+            (recur updated-game (drop 2 turns)))
           ;; firing failed - opponent wins
           (finished game player1 player2))))))
 

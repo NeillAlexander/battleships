@@ -27,13 +27,11 @@
          (get-name [this] name)
          (bot? [this] true)
          (ship-position [this ship] (positions-map (:key ship)))
-         (next-shot [this]
+         (next-shot [this player-context]
            (let [shot (nth shots @num-shots)]
              (if (< @num-shots (dec (count shots)))
                (swap! num-shots inc))          
              shot))
-         (shot-result [this coord result]
-           (println (str "Shot result for " name ": " coord " " result)))
          (you-won [this]
            (println (str name " won!"))
            (reset! result-atom true))

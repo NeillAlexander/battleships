@@ -1,3 +1,11 @@
+* TODO Make engine more functional
+** TODO Get rid of the shot-result
+Update for the core and test engine ns
+*** TODO Replace with a map of the context
+{:last-shot "A1", :last-result :hit, :hits ["A1" "C3"], :misses
+["A2"], :ships-sunk [] :ships-remaining {:aircraft-carrier {}} 
+** TODO Make engine evaluate to a game summary
+Context for both players and overall game stats.
 * TODO write a support namespace which provides functions for submitting to the server
 ** TODO should have a verify function
 To ensure that the implementation works before sending.

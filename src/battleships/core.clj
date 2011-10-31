@@ -20,14 +20,12 @@
                                     (orientations (rand-int (count orientations))))]
              (println (str name " trying to place " (:name ship) " at " pos))
              pos))
-         (next-shot [this]
+         (next-shot [this player-context]
+           (println (str name " " player-context))
            (let [key (nth (keys @squares) (rand-int (count @squares)))
                  coord (@squares key)]
              (swap! squares dissoc key)
-             coord))
-         (shot-result [this coord result]
-           (swap! num-shots inc)
-           (println (str name " fires at " coord " --> " result)))
+             coord))         
          (you-won [this]
            (println (str name " won in " @num-shots " shots!")))
          (you-lost [this]
