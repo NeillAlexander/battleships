@@ -32,10 +32,10 @@
              (if (< @num-shots (dec (count shots)))
                (swap! num-shots inc))          
              shot))
-         (you-won [this]
+         (you-won [this player-context]
            (println (str name " won!"))
            (reset! result-atom true))
-         (you-lost [this]
+         (you-lost [this player-context]
            (println (str name " lost!"))
            (reset! result-atom false))))))
 

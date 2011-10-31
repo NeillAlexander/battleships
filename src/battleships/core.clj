@@ -10,8 +10,7 @@
      (let [board (board/make-board)
            squares (atom (zipmap (range 0 99)
                                  (map (partial board/transform board) (range 0 99))))
-           orientations [:h :v]
-           num-shots (atom 0)]
+           orientations [:h :v]]
        (reify engine/Player
          (get-name [this] name)
          (bot? [this] true)
@@ -20,15 +19,16 @@
                                     (orientations (rand-int (count orientations))))]
              (println (str name " trying to place " (:name ship) " at " pos))
              pos))
-         (next-shot [this player-context]
-           (println (str name " " player-context))
+         (next-shot [this {:keys [last-shot last-result hits misses ships-sunk]}]
+           (println (str name " " last-shot " = " last-result ", ships sunk = " ships-sunk))
            (let [key (nth (keys @squares) (rand-int (count @squares)))
                  coord (@squares key)]
              (swap! squares dissoc key)
              coord))         
-         (you-won [this]
-           (println (str name " won in " @num-shots " shots!")))
-         (you-lost [this]
+         (you-won [this {:keys [last-shot last-result hits misses ships-sunk]}]
+           (println (str name " " last-shot " = " last-result ", ships sunk = " ships-sunk))
+           (println (str name " won in " (+ (count hits) (count misses)) " shots!")))
+         (you-lost [this player-context]
            (println (str name " lost!")))))))
 
 (defn -main

@@ -8,221 +8,171 @@ This is a toy project to do some practice.
 At the minute when it is run it just kicks off a game between 2 cpu players, and outputs the result. I have bigger plans, however...
 
 $ lein trampoline run
-cpu1 trying to place aircraft carrier at [D8,:h]
-cpu1 trying to place aircraft carrier at [B10,:v]
-cpu1 trying to place battleship at [D7,:v]
-cpu1 trying to place destroyer at [D10,:v]
-cpu1 trying to place destroyer at [B1,:v]
-cpu1 trying to place submarine at [F6,:h]
-cpu1 trying to place submarine at [A9,:v]
-cpu1 trying to place patrol boat at [C1,:h]
-cpu1 trying to place patrol boat at [B5,:v]
-cpu2 trying to place aircraft carrier at [H7,:h]
-cpu2 trying to place aircraft carrier at [H6,:v]
-cpu2 trying to place aircraft carrier at [F2,:v]
-cpu2 trying to place battleship at [E9,:v]
-cpu2 trying to place destroyer at [F8,:v]
-cpu2 trying to place submarine at [H8,:v]
-cpu2 trying to place submarine at [I9,:v]
-cpu2 trying to place submarine at [D1,:h]
-cpu2 trying to place patrol boat at [J8,:v]
-cpu2 trying to place patrol boat at [J3,:v]
-cpu2 trying to place patrol boat at [C9,:v]
-cpu1 fires at G6 --> :miss
-cpu2 fires at I8 --> :miss
-cpu1 fires at E5 --> :miss
-cpu2 fires at F1 --> :miss
-cpu1 fires at H4 --> :miss
-cpu2 fires at D4 --> :miss
-cpu1 fires at I4 --> :miss
-cpu2 fires at E2 --> :miss
-cpu1 fires at A7 --> :miss
-cpu2 fires at E4 --> :miss
-cpu1 fires at A5 --> :miss
-cpu2 fires at B7 --> :miss
-cpu1 fires at H6 --> :miss
-cpu2 fires at D8 --> :miss
-cpu1 fires at I8 --> :miss
-cpu2 fires at F4 --> :miss
-cpu1 fires at E7 --> :miss
-cpu2 fires at E3 --> :miss
-cpu1 fires at H9 --> :hit
-cpu2 fires at D1 --> :hit
-cpu1 fires at E10 --> :miss
-cpu2 fires at I5 --> :miss
-cpu1 fires at F5 --> :miss
-cpu2 fires at B3 --> :miss
-cpu1 fires at H10 --> :miss
-cpu2 fires at D10 --> :hit
-cpu1 fires at G8 --> :hit
-cpu2 fires at G6 --> :miss
-cpu1 fires at E4 --> :miss
-cpu2 fires at G9 --> :miss
-cpu1 fires at H3 --> :miss
-cpu2 fires at J3 --> :miss
-cpu1 fires at J4 --> :miss
-cpu2 fires at I9 --> :miss
-cpu1 fires at D9 --> :hit
-cpu2 fires at A2 --> :miss
-cpu1 fires at G2 --> :hit
-cpu2 fires at F7 --> :hit
-cpu1 fires at E2 --> :miss
-cpu2 fires at C5 --> :hit
-cpu1 fires at B4 --> :miss
-cpu2 fires at A4 --> :miss
-cpu1 fires at H8 --> :hit
-cpu2 fires at G2 --> :miss
-cpu1 fires at E8 --> :miss
-cpu2 fires at J2 --> :miss
-cpu1 fires at B8 --> :miss
-cpu2 fires at B5 --> :patrol-boat
-cpu1 fires at H2 --> :hit
-cpu2 fires at B9 --> :hit
-cpu1 fires at C2 --> :miss
-cpu2 fires at A6 --> :miss
-cpu1 fires at I2 --> :hit
-cpu2 fires at J5 --> :miss
-cpu1 fires at I10 --> :miss
-cpu2 fires at H4 --> :miss
-cpu1 fires at I6 --> :miss
-cpu2 fires at F9 --> :miss
-cpu1 fires at J8 --> :miss
-cpu2 fires at I7 --> :miss
-cpu1 fires at H1 --> :miss
-cpu2 fires at H3 --> :miss
-cpu1 fires at J7 --> :miss
-cpu2 fires at D2 --> :miss
-cpu1 fires at A1 --> :miss
-cpu2 fires at B6 --> :miss
-cpu1 fires at E6 --> :miss
-cpu2 fires at B10 --> :hit
-cpu1 fires at C8 --> :miss
-cpu2 fires at D5 --> :miss
-cpu1 fires at E3 --> :miss
-cpu2 fires at A9 --> :hit
-cpu1 fires at C1 --> :miss
-cpu2 fires at C9 --> :submarine
-cpu1 fires at I7 --> :miss
-cpu2 fires at H7 --> :miss
-cpu1 fires at D5 --> :miss
-cpu2 fires at C8 --> :miss
-cpu1 fires at B2 --> :miss
-cpu2 fires at C1 --> :hit
-cpu1 fires at B1 --> :miss
-cpu2 fires at E1 --> :miss
-cpu1 fires at F2 --> :hit
-cpu2 fires at I4 --> :miss
-cpu1 fires at A9 --> :miss
-cpu2 fires at J6 --> :miss
-cpu1 fires at C6 --> :miss
-cpu2 fires at H5 --> :miss
-cpu1 fires at C7 --> :miss
-cpu2 fires at E6 --> :miss
-cpu1 fires at H7 --> :miss
-cpu2 fires at J1 --> :miss
-cpu1 fires at A3 --> :miss
-cpu2 fires at F5 --> :miss
-cpu1 fires at B5 --> :miss
-cpu2 fires at F2 --> :miss
-cpu1 fires at J1 --> :miss
-cpu2 fires at C6 --> :miss
-cpu1 fires at I9 --> :miss
-cpu2 fires at A7 --> :miss
-cpu1 fires at J5 --> :miss
-cpu2 fires at H1 --> :miss
-cpu1 fires at J9 --> :miss
-cpu2 fires at C2 --> :miss
-cpu1 fires at A4 --> :miss
-cpu2 fires at H6 --> :miss
-cpu1 fires at F4 --> :miss
-cpu2 fires at I2 --> :miss
-cpu1 fires at C3 --> :miss
-cpu2 fires at A3 --> :miss
-cpu1 fires at J2 --> :aircraft-carrier
-cpu2 fires at A1 --> :miss
-cpu1 fires at F3 --> :miss
-cpu2 fires at C4 --> :miss
-cpu1 fires at F1 --> :miss
-cpu2 fires at E8 --> :miss
-cpu1 fires at D8 --> :miss
-cpu2 fires at B2 --> :miss
-cpu1 fires at J6 --> :miss
-cpu2 fires at I10 --> :miss
-cpu1 fires at H5 --> :miss
-cpu2 fires at J7 --> :miss
-cpu1 fires at I3 --> :miss
-cpu2 fires at I6 --> :miss
-cpu1 fires at F7 --> :miss
-cpu2 fires at D6 --> :miss
-cpu1 fires at B10 --> :miss
-cpu2 fires at D7 --> :hit
-cpu1 fires at C9 --> :patrol-boat
-cpu2 fires at H9 --> :miss
-cpu1 fires at D3 --> :hit
-cpu2 fires at G7 --> :hit
-cpu1 fires at A10 --> :miss
-cpu2 fires at B8 --> :miss
-cpu1 fires at E1 --> :miss
-cpu2 fires at G10 --> :miss
-cpu1 fires at G5 --> :miss
-cpu2 fires at B4 --> :miss
-cpu1 fires at D4 --> :miss
-cpu2 fires at C10 --> :hit
-cpu1 fires at B9 --> :miss
-cpu2 fires at G3 --> :miss
-cpu1 fires at D2 --> :hit
-cpu2 fires at I3 --> :miss
-cpu1 fires at F9 --> :hit
-cpu2 fires at G5 --> :miss
-cpu1 fires at C10 --> :miss
-cpu2 fires at G1 --> :miss
-cpu1 fires at A2 --> :miss
-cpu2 fires at J4 --> :miss
-cpu1 fires at C5 --> :miss
-cpu2 fires at A8 --> :miss
-cpu1 fires at E9 --> :hit
-cpu2 fires at A10 --> :miss
-cpu1 fires at G7 --> :miss
-cpu2 fires at F10 --> :hit
-cpu1 fires at G1 --> :miss
-cpu2 fires at A5 --> :miss
-cpu1 fires at F6 --> :miss
-cpu2 fires at H8 --> :miss
-cpu1 fires at B7 --> :miss
-cpu2 fires at E9 --> :miss
-cpu1 fires at G3 --> :miss
-cpu2 fires at D9 --> :miss
-cpu1 fires at F10 --> :miss
-cpu2 fires at C3 --> :miss
-cpu1 fires at D10 --> :miss
-cpu2 fires at H10 --> :miss
-cpu1 fires at D7 --> :miss
-cpu2 fires at G8 --> :miss
-cpu1 fires at B6 --> :miss
-cpu2 fires at F8 --> :miss
-cpu1 fires at I5 --> :miss
-cpu2 fires at F6 --> :miss
-cpu1 fires at J3 --> :miss
-cpu2 fires at G4 --> :miss
-cpu1 fires at D6 --> :miss
-cpu2 fires at J8 --> :miss
-cpu1 fires at G10 --> :miss
-cpu2 fires at D3 --> :miss
-cpu1 fires at F8 --> :destroyer
-cpu2 fires at E7 --> :battleship
-cpu1 fires at A6 --> :miss
-cpu2 fires at I1 --> :miss
-cpu1 fires at A8 --> :miss
-cpu2 fires at E10 --> :aircraft-carrier
-cpu1 fires at I1 --> :miss
-cpu2 fires at J9 --> :miss
-cpu1 fires at D1 --> :submarine
-cpu2 fires at H2 --> :miss
-cpu1 fires at B3 --> :miss
-cpu2 fires at B1 --> :destroyer
-cpu2 won in 96 shots!
+cpu1  = , ships sunk = []
+cpu2  = , ships sunk = []
+cpu1 E2 = :miss, ships sunk = []
+cpu2 C7 = :miss, ships sunk = []
+cpu1 G7 = :miss, ships sunk = []
+cpu2 H10 = :miss, ships sunk = []
+cpu1 E6 = :miss, ships sunk = []
+cpu2 F8 = :miss, ships sunk = []
+cpu1 J7 = :hit, ships sunk = []
+cpu2 D3 = :miss, ships sunk = []
+cpu1 H6 = :hit, ships sunk = []
+cpu2 B9 = :miss, ships sunk = []
+cpu1 J5 = :miss, ships sunk = []
+cpu2 H4 = :miss, ships sunk = []
+cpu1 B3 = :miss, ships sunk = []
+cpu2 F6 = :miss, ships sunk = []
+cpu1 I7 = :miss, ships sunk = []
+cpu2 B4 = :miss, ships sunk = []
+cpu1 E10 = :miss, ships sunk = []
+cpu2 I6 = :hit, ships sunk = []
+cpu1 G5 = :miss, ships sunk = []
+cpu2 E5 = :miss, ships sunk = []
+cpu1 C7 = :hit, ships sunk = []
+cpu2 F10 = :miss, ships sunk = []
+cpu1 F4 = :miss, ships sunk = []
+cpu2 B3 = :miss, ships sunk = []
+cpu1 J3 = :miss, ships sunk = []
+cpu2 C1 = :miss, ships sunk = []
+cpu1 F2 = :miss, ships sunk = []
+cpu2 G7 = :miss, ships sunk = []
+cpu1 F5 = :miss, ships sunk = []
+cpu2 F5 = :miss, ships sunk = []
+cpu1 J1 = :miss, ships sunk = []
+cpu2 C3 = :miss, ships sunk = []
+cpu1 C10 = :miss, ships sunk = []
+cpu2 A2 = :miss, ships sunk = []
+cpu1 H4 = :miss, ships sunk = []
+cpu2 A1 = :miss, ships sunk = []
+cpu1 D10 = :miss, ships sunk = []
+cpu2 H2 = :hit, ships sunk = []
+cpu1 A9 = :hit, ships sunk = []
+cpu2 D2 = :hit, ships sunk = []
+cpu1 D2 = :miss, ships sunk = []
+cpu2 E4 = :miss, ships sunk = []
+cpu1 G9 = :miss, ships sunk = []
+cpu2 A5 = :miss, ships sunk = []
+cpu1 I2 = :hit, ships sunk = []
+cpu2 H9 = :miss, ships sunk = []
+cpu1 H1 = :miss, ships sunk = []
+cpu2 F4 = :miss, ships sunk = []
+cpu1 F6 = :miss, ships sunk = []
+cpu2 E6 = :miss, ships sunk = []
+cpu1 J6 = :miss, ships sunk = []
+cpu2 C8 = :miss, ships sunk = []
+cpu1 E9 = :hit, ships sunk = []
+cpu2 A10 = :miss, ships sunk = []
+cpu1 C6 = :miss, ships sunk = []
+cpu2 C5 = :miss, ships sunk = []
+cpu1 E3 = :miss, ships sunk = []
+cpu2 G2 = :hit, ships sunk = []
+cpu1 D6 = :miss, ships sunk = []
+cpu2 J1 = :hit, ships sunk = []
+cpu1 I1 = :miss, ships sunk = []
+cpu2 I3 = :hit, ships sunk = []
+cpu1 A5 = :miss, ships sunk = []
+cpu2 E2 = :hit, ships sunk = []
+cpu1 G4 = :miss, ships sunk = []
+cpu2 J5 = :miss, ships sunk = []
+cpu1 H3 = :miss, ships sunk = []
+cpu2 B10 = :miss, ships sunk = []
+cpu1 A3 = :miss, ships sunk = []
+cpu2 A6 = :miss, ships sunk = []
+cpu1 I6 = :miss, ships sunk = []
+cpu2 A7 = :miss, ships sunk = []
+cpu1 E8 = :miss, ships sunk = []
+cpu2 B7 = :miss, ships sunk = []
+cpu1 B9 = :hit, ships sunk = []
+cpu2 H7 = :miss, ships sunk = []
+cpu1 F7 = :miss, ships sunk = []
+cpu2 I7 = :miss, ships sunk = []
+cpu1 E1 = :miss, ships sunk = []
+cpu2 J4 = :miss, ships sunk = []
+cpu1 A10 = :miss, ships sunk = []
+cpu2 H1 = :miss, ships sunk = []
+cpu1 I9 = :miss, ships sunk = []
+cpu2 B2 = :miss, ships sunk = []
+cpu1 J9 = :miss, ships sunk = []
+cpu2 A3 = :miss, ships sunk = []
+cpu1 B2 = :miss, ships sunk = []
+cpu2 C4 = :miss, ships sunk = []
+cpu1 H2 = :hit, ships sunk = []
+cpu2 J8 = :miss, ships sunk = []
+cpu1 E5 = :miss, ships sunk = []
+cpu2 E7 = :miss, ships sunk = []
+cpu1 D8 = :miss, ships sunk = []
+cpu2 H8 = :miss, ships sunk = []
+cpu1 C1 = :miss, ships sunk = []
+cpu2 C2 = :miss, ships sunk = []
+cpu1 I8 = :miss, ships sunk = []
+cpu2 J6 = :miss, ships sunk = []
+cpu1 A6 = :miss, ships sunk = []
+cpu2 D8 = :hit, ships sunk = []
+cpu1 D7 = :miss, ships sunk = []
+cpu2 I9 = :miss, ships sunk = []
+cpu1 A2 = :miss, ships sunk = []
+cpu2 F3 = :miss, ships sunk = []
+cpu1 B8 = :miss, ships sunk = []
+cpu2 B5 = :miss, ships sunk = []
+cpu1 E7 = :miss, ships sunk = []
+cpu2 G9 = :miss, ships sunk = []
+cpu1 C8 = :miss, ships sunk = []
+cpu2 C6 = :miss, ships sunk = []
+cpu1 I10 = :miss, ships sunk = []
+cpu2 D9 = :hit, ships sunk = []
+cpu1 A1 = :miss, ships sunk = []
+cpu2 G1 = :miss, ships sunk = []
+cpu1 G1 = :miss, ships sunk = []
+cpu2 E8 = :miss, ships sunk = []
+cpu1 G3 = :miss, ships sunk = []
+cpu2 J7 = :miss, ships sunk = []
+cpu1 A7 = :hit, ships sunk = []
+cpu2 C10 = :miss, ships sunk = []
+cpu1 H9 = :hit, ships sunk = []
+cpu2 I8 = :miss, ships sunk = []
+cpu1 D4 = :miss, ships sunk = []
+cpu2 G5 = :miss, ships sunk = []
+cpu1 F8 = :miss, ships sunk = []
+cpu2 D1 = :miss, ships sunk = []
+cpu1 D1 = :miss, ships sunk = []
+cpu2 H3 = :miss, ships sunk = []
+cpu1 F3 = :miss, ships sunk = []
+cpu2 B6 = :miss, ships sunk = []
+cpu1 B1 = :miss, ships sunk = []
+cpu2 B1 = :miss, ships sunk = []
+cpu1 B5 = :miss, ships sunk = []
+cpu2 J2 = :hit, ships sunk = []
+cpu1 D3 = :miss, ships sunk = []
+cpu2 A9 = :miss, ships sunk = []
+cpu1 H8 = :hit, ships sunk = []
+cpu2 A8 = :miss, ships sunk = []
+cpu1 J4 = :miss, ships sunk = []
+cpu2 I1 = :miss, ships sunk = []
+cpu1 G6 = :miss, ships sunk = []
+cpu2 E9 = :hit, ships sunk = []
+cpu1 F10 = :miss, ships sunk = []
+cpu2 D7 = :submarine, ships sunk = [:submarine]
+cpu1 F9 = :miss, ships sunk = []
+cpu2 E10 = :patrol-boat, ships sunk = [:submarine :patrol-boat]
+cpu1 C2 = :miss, ships sunk = []
+cpu2 G8 = :miss, ships sunk = [:submarine :patrol-boat]
+cpu1 D9 = :hit, ships sunk = []
+cpu2 D6 = :miss, ships sunk = [:submarine :patrol-boat]
+cpu1 B6 = :miss, ships sunk = []
+cpu2 J3 = :destroyer, ships sunk = [:submarine :patrol-boat :destroyer]
+cpu1 J8 = :patrol-boat, ships sunk = [:patrol-boat]
+cpu2 F2 = :aircraft-carrier, ships sunk = [:submarine :patrol-boat :destroyer :aircraft-carrier]
+cpu1 C9 = :aircraft-carrier, ships sunk = [:patrol-boat :aircraft-carrier]
+cpu2 F7 = :miss, ships sunk = [:submarine :patrol-boat :destroyer :aircraft-carrier]
+cpu1 B4 = :miss, ships sunk = [:patrol-boat :aircraft-carrier]
+cpu2 H5 = :miss, ships sunk = [:submarine :patrol-boat :destroyer :aircraft-carrier]
+cpu1 F1 = :miss, ships sunk = [:patrol-boat :aircraft-carrier]
+cpu2 I4 = :hit, ships sunk = [:submarine :patrol-boat :destroyer :aircraft-carrier]
+cpu2 I5 = :battleship, ships sunk = [:submarine :patrol-boat :destroyer :aircraft-carrier :battleship]
+cpu2 won in 81 shots!
 cpu1 lost!
-
 
 ## License
 

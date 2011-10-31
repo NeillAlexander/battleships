@@ -19,9 +19,9 @@
     "Return the ShipPosition for the ship. This will be called for each ship until all ships are placed on board.")
   (next-shot [this player-context]
     "Return the coordinate for the next shot. Will be called until a valid coord is returned.")
-  (you-won [this]
+  (you-won [this player-context]
     "Called when this player won the game.")
-  (you-lost [this]
+  (you-lost [this player-context]
     "Called when this player lost the game."))
 
 (defn valid-player? [player]
@@ -65,11 +65,11 @@
 (defn count-failures [& players]
   (reduce (fn [n player] (if (:failed player) (inc n) n)) 0 players))
 
-(defn notify-winning-player [winner-key loser-key player1 player2]
+(defn notify-winning-player [game winner-key loser-key player1 player2]
   (let [winner (if (= :player1 winner-key) player1 player2)
         loser (if (= :player2 loser-key) player2 player1)]
-    (you-won winner)
-    (you-lost loser)))
+    (you-won winner (get-in game [winner-key :context]))
+    (you-lost loser (get-in game [loser-key :context]))))
 
 (defn new-player-context [game player-key]
   (assoc-in game [player-key :context]
@@ -89,7 +89,8 @@
 
 (defn update-misses [misses coord result]
   (if-not result
-    (conj misses coord)))
+    (conj misses coord)
+    misses))
 
 (defn update-ships-sunk [ships-sunk sunk]
   (if sunk
@@ -127,11 +128,11 @@
     (cond
      (= 1 num-failures) (let [failed-player (the-failed-player game)]
                           (let [winning-player (if (= :player1 failed-player) :player2 :player1)]
-                            (notify-winning-player winning-player failed-player
+                            (notify-winning-player game winning-player failed-player
                                                    player1-impl player2-impl)))
      (= 2 num-failures) (do
-                          (you-lost player1-impl)
-                          (you-lost player2-impl))
+                          (you-lost player1-impl (get-in game [:player1 :context]))
+                          (you-lost player2-impl (get-in game [:player2 :context])))
      :else (throw (IllegalStateException. "Unknown finishing condition")))))
 
 (defn fire-at-opponent
@@ -181,7 +182,7 @@
               (if sunk
                 ;; if it sunk something, have I won?
                 (if (game/all-ships-sunk? opponent-data)
-                  (notify-winning-player player-key opponent-key player1 player2)
+                  (notify-winning-player updated-game player-key opponent-key player1 player2)
                   (recur updated-game (drop 2 turns)))
                 (recur updated-game (drop 2 turns))))
             ;; missed - continue with next player
