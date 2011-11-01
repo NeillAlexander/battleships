@@ -19,16 +19,16 @@
                                     (orientations (rand-int (count orientations))))]
              (println (str name " trying to place " (:name ship) " at " pos))
              pos))
-         (next-shot [this {:keys [last-shot last-result hits misses ships-sunk]}]
+         (next-shot [this {:keys [last-shot last-result hits misses ships-sunk]} opponent-context]
            (println (str name " " last-shot " = " last-result ", ships sunk = " ships-sunk))
            (let [key (nth (keys @squares) (rand-int (count @squares)))
                  coord (@squares key)]
              (swap! squares dissoc key)
              coord))         
-         (you-won [this {:keys [last-shot last-result hits misses ships-sunk]}]
+         (you-won [this {:keys [last-shot last-result hits misses ships-sunk]} opponent-context]
            (println (str name " " last-shot " = " last-result ", ships sunk = " ships-sunk))
            (println (str name " won in " (+ (count hits) (count misses)) " shots!")))
-         (you-lost [this player-context]
+         (you-lost [this player-context opponent-context]
            (println (str name " lost!")))))))
 
 (defn -main

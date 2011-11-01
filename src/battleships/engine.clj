@@ -17,11 +17,11 @@
     "Must return true if this is a bot.")
   (ship-position [this ship]
     "Return the ShipPosition for the ship. This will be called for each ship until all ships are placed on board.")
-  (next-shot [this player-context]
+  (next-shot [this player-context opponent-context]
     "Return the coordinate for the next shot. Will be called until a valid coord is returned.")
-  (you-won [this player-context]
+  (you-won [this player-context opponent-context]
     "Called when this player won the game.")
-  (you-lost [this player-context]
+  (you-lost [this player-context opponent-context]
     "Called when this player lost the game."))
 
 (defn valid-player? [player]
@@ -67,9 +67,11 @@
 
 (defn notify-winning-player [game winner-key loser-key player1 player2]
   (let [winner (if (= :player1 winner-key) player1 player2)
-        loser (if (= :player2 loser-key) player2 player1)]
-    (you-won winner (get-in game [winner-key :context]))
-    (you-lost loser (get-in game [loser-key :context]))))
+        loser (if (= :player2 loser-key) player2 player1)
+        winner-context (get-in game [winner-key :context])
+        loser-context (get-in game [loser-key :context])]
+    (you-won winner winner-context loser-context)
+    (you-lost loser loser-context winner-context)))
 
 (defn new-player-context [game player-key]
   (assoc-in game [player-key :context]
@@ -124,15 +126,17 @@
 (defn finished
   "Checks the end game conditions and notifies accordingly."
   [{:keys [player1 player2] :as game} player1-impl player2-impl]
-  (let [num-failures (count-failures player1 player2)]
+  (let [num-failures (count-failures player1 player2)
+        player1-context (get-in game [:player1 :context])
+        player2-context (get-in game [:player2 :context])]
     (cond
      (= 1 num-failures) (let [failed-player (the-failed-player game)]
                           (let [winning-player (if (= :player1 failed-player) :player2 :player1)]
                             (notify-winning-player game winning-player failed-player
                                                    player1-impl player2-impl)))
      (= 2 num-failures) (do
-                          (you-lost player1-impl (get-in game [:player1 :context]))
-                          (you-lost player2-impl (get-in game [:player2 :context])))
+                          (you-lost player1-impl player1-context player2-context)
+                          (you-lost player2-impl player2-context player1-context))
      :else (throw (IllegalStateException. "Unknown finishing condition")))))
 
 (defn fire-at-opponent
@@ -143,7 +147,8 @@
          board (player-data :board)]
     (if-not (and (> num-attempts 100) (bot? player-impl))
       (let [player-context (get-in game [player-key :context])
-            coord (next-shot player-impl player-context)]
+            opponent-context (get-in game [player-key :context])
+            coord (next-shot player-impl player-context opponent-context)]
         (if-let [updated-player-data (game/fire-shell player-data coord)]
           (let [result (board/hit? (updated-player-data :board) coord)
                 updated-player-data (if result
