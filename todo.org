@@ -1,5 +1,4 @@
-* TODO Make engine evaluate to a game summary
-Context for both players and overall game stats.
+
 * TODO Refactor to improve code
 Scope for HOF / macros to simplify?z
 * TODO write a support namespace which provides functions for submitting to the server

@@ -84,28 +84,21 @@
    result :hit
    :else :miss))
 
-(defn update-hits [hits coord result sunk]
-  (if result
-    (conj hits coord)
-    hits))
-
-(defn update-misses [misses coord result]
-  (if-not result
-    (conj misses coord)
-    misses))
-
-(defn update-ships-sunk [ships-sunk sunk]
-  (if sunk
-    (conj ships-sunk sunk)
-    ships-sunk))
+(defn conj-data-in-context
+  "Update the data at key in context with conj if bool."
+  [context key data bool]
+  (let [data-store (context key)]
+    (if bool
+      (conj data-store data)
+      data-store)))
 
 (defn update-player-context
   "Update the player context with the result of the last shot."
   [game player-key coord result sunk]
   (let [context (get-in game [player-key :context])
-        hits (update-hits (:hits context) coord result sunk)
-        misses (update-misses (:misses context) coord result)
-        ships-sunk (update-ships-sunk (:ships-sunk context) sunk)]
+        hits (conj-data-in-context context :hits coord result)
+        misses (conj-data-in-context context :misses coord (not result))
+        ships-sunk (conj-data-in-context  context :ships-sunk sunk sunk)]
     (-> (assoc-in game [player-key :context :last-shot] coord)
         (assoc-in [player-key :context :last-result] (calc-result result sunk))
         (assoc-in [player-key :context :hits] hits)
