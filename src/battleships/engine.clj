@@ -137,7 +137,10 @@
      (= 2 num-failures) (do
                           (you-lost player1-impl player1-context player2-context)
                           (you-lost player2-impl player2-context player1-context))
-     :else (throw (IllegalStateException. "Unknown finishing condition")))))
+     (:winner game) (notify-winning-player game (:winner game) (:loser game) player1-impl player2-impl)
+     :else (throw (IllegalStateException. "Unknown finishing condition"))))
+  game)
+
 
 (defn fire-at-opponent
   "Fire a shell at opponent, returning map of {:result :updated-game}"
@@ -187,20 +190,25 @@
               (if sunk
                 ;; if it sunk something, have I won?
                 (if (game/all-ships-sunk? opponent-data)
-                  (notify-winning-player updated-game player-key opponent-key player1 player2)
+                  (finished (assoc updated-game :winner player-key :loser opponent-key) player1 player2)
                   (recur updated-game (drop 2 turns)))
                 (recur updated-game (drop 2 turns))))
             ;; missed - continue with next player
             (recur updated-game (drop 2 turns)))
           ;; firing failed - opponent wins
-          (finished game player1 player2))))))
+          (finished updated-game player1 player2))))))
+
+(defn generate-stats
+  "For now this just returns the game."
+  [game]
+  game)
 
 (defn play
-  "Call this to start a new game with the 2 players."
+  "Call this to start a new game with the 2 players. Returns the stats for the game."
   [player1 player2]
   (ensure-valid-players player1 player2)
-  (let [game (init-game player1 player2)]
-    ;; check to see if either player failed. If one failed and the other didn't then we have a winner
-    (if (ship-placement-success? game)
-      (run-game-loop game player1 player2)
-      (finished game player1 player2))))
+  (let [game (init-game player1 player2)
+        finished-game (if (ship-placement-success? game)
+                        (run-game-loop game player1 player2)
+                        (finished game player1 player2))]
+    (generate-stats finished-game)))

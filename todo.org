@@ -1,4 +1,3 @@
-* TODO Get rid of ShipPosition
 * TODO Make engine evaluate to a game summary
 Context for both players and overall game stats.
 * TODO Refactor to improve code
@@ -11,6 +10,7 @@ To ensure that the implementation works before sending.
 i.e. need to be able to read it in with the reader, so can't use
 records etc
 * TODO write the server which will allow people to submit a player for evaluation
+* TODO Get rid of ShipPosition?
 * TODO in server keep track of the best results
 ** TODO win / loss ration
 ** TODO number of shots
