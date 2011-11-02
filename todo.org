@@ -1,6 +1,5 @@
 
 * TODO Refactor to improve code
-Scope for HOF / macros to simplify?z
 * TODO write a support namespace which provides functions for submitting to the server
 ** TODO should have a verify function
 To ensure that the implementation works before sending.

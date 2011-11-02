@@ -32,21 +32,33 @@
                (valid-player? player2))
     (throw (IllegalArgumentException. "Invalid players"))))
 
+;; Abstract out the attempt to a) practice writing macros and b) make the code more readable
+(defmacro attempt
+  "Executes attempt-clause repeatedly until it returns a truthy answer. The number of allowed attempts is specified as follows: [:limited-to 100 :when true]"
+  [limits attempt-clause else]
+  (let [limit-map (apply array-map limits)
+        else-clause (rest else)]
+    `(loop [num-attempts# 0]
+       (if-not (and (> num-attempts# ~(:limited-to limit-map)) ~(:when limit-map))
+         (if-let [result# ~attempt-clause]
+           result#
+           (recur (inc num-attempts#)))
+         ~(first else-clause)))))
+
 (defn place-ship
   "Places the ship on the board, repeating until a valid position is provided or (for a bot) the number of attempts exceeds 100"
   [player-key player-impl game ship-key]
-  (loop [num-attempts 0
-         player-data (game player-key)
-         ships (:ships player-data)]
-    ;; if the number of attempts exceeds 100 for a bot, mark it as failed
-    (if (and (> num-attempts 100) (bot? player-impl))
-      (assoc-in game [player-key :failed] true)
-      (let [ship-pos (ship-position player-impl (ships ship-key))
-            updated-player-data (game/place-ship
-                                 player-data ship-key (:coord ship-pos) (:orientation ship-pos))]
-        (if updated-player-data
-          (assoc game player-key updated-player-data)
-          (recur (inc num-attempts) player-data ships))))))
+  ;; if it's a bot, give it 100 attempts to make a valid move
+  (attempt [:limited-to 100 :when (bot? player-impl)]
+    (let [player-data (game player-key)
+          ships (:ships player-data)
+          ship-pos (ship-position player-impl (ships ship-key))]
+      (if-let [updated-player-data (game/place-ship
+                                    player-data ship-key (:coord ship-pos) (:orientation ship-pos))]
+        (assoc game player-key updated-player-data)))
+    (else
+     (assoc-in game [player-key :failed] true))))
+
 
 (defn place-ships
   "Calls back to ship-position for every ship until all have been placed successfully."
@@ -135,35 +147,37 @@
   game)
 
 
+;; fire-at-opponent below here
 (defn fire-at-opponent
   "Fire a shell at opponent, returning map of {:result :updated-game}"
   [game player-impl player-key opponent-key]
-  (loop [num-attempts 0
-         player-data (game opponent-key)
-         board (player-data :board)]
-    (if-not (and (> num-attempts 100) (bot? player-impl))
-      (let [player-context (get-in game [player-key :context])
-            opponent-context (get-in game [player-key :context])
-            coord (next-shot player-impl player-context opponent-context)]
-        (if-let [updated-player-data (game/fire-shell player-data coord)]
-          (let [result (board/hit? (updated-player-data :board) coord)
-                updated-player-data (if result
-                                      (game/update-hits updated-player-data coord)
-                                      updated-player-data)
-                sunk (game/sunk? updated-player-data result)] 
-            {:updated-game (update-player-context (assoc game opponent-key updated-player-data)
-                                                  player-key
-                                                  coord
-                                                  result
-                                                  sunk),
-             :result result
-             :sunk sunk
-             :coord coord})
-          (recur (inc num-attempts) player-data board)))
-      {:updated-game (assoc-in game [player-key :failed] true)
-       :result nil
-       :sunk nil
-       :coord nil})))
+  ;; if it's a bot playing, then give it 100 attempts to make a valid move
+  (attempt [:limited-to 100 :when (bot? player-impl)]
+    (let [player-data (game opponent-key)
+          board (player-data :board)
+          player-context (get-in game [player-key :context])
+          opponent-context (get-in game [player-key :context])
+          coord (next-shot player-impl player-context opponent-context)]
+      (if-let [updated-player-data (game/fire-shell player-data coord)]
+        (let [result (board/hit? (updated-player-data :board) coord)
+              updated-player-data (if result
+                                    (game/update-hits updated-player-data coord)
+                                    updated-player-data)
+              sunk (game/sunk? updated-player-data result)] 
+          {:updated-game (update-player-context (assoc game opponent-key updated-player-data)
+                                                player-key
+                                                coord
+                                                result
+                                                sunk),
+           :result result
+           :sunk sunk
+           :coord coord})))
+    (else
+     {:updated-game (assoc-in game [player-key :failed] true)
+      :result nil
+      :sunk nil
+      :coord nil})))
+
 
 (defn run-game-loop
   "The main loop that asks for moves until someone wins or a bot exceeds the number of allowed errors"
