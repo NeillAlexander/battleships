@@ -1,16 +1,20 @@
 
-* TODO Refactor to improve code
 * TODO write a support namespace which provides functions for submitting to the server
-** TODO should have a verify function
+** DONE should have a verify function
 To ensure that the implementation works before sending.
-** TODO should have a submit function
-** TODO Solve the problem of providing a map implementation of the player
+** DONE Solve the problem of providing a map implementation of the player
 i.e. need to be able to read it in with the reader, so can't use
 records etc
+** TODO should have a submit function
+* TODO Make sure the game engine is resilient to dodgy input!
 * TODO write the server which will allow people to submit a player for evaluation
-* TODO Get rid of ShipPosition?
+* TODO Server should play all players against each other
+Keep a matrix with number of times each has played against each other.
+* TODO Provide a way to update a player
+Don't want to have people overriding someone elses! When submit,
+provide an id?
 * TODO in server keep track of the best results
-** TODO win / loss ration
+** TODO win / loss ratio
 ** TODO number of shots
 *** TODO avg / mean / median / standard deviation etc
 This will provide a way to rank players.
@@ -18,8 +22,7 @@ This will provide a way to rank players.
 ** TODO Need to provide built in game stat support rather than relying on player implementation
 ** TODO plot a graph using incanter to show this - acts as benchmark for improving
 * TODO write a web front end for viewing the server stats
-* TODO keep track of all games in server - enable replaying to watch tactics
 * TODO provide a way to have a tournament
 * TODO in tournament mode, provide a way to watch players go against each other
-* TODO write a human player
-* TODO provide a way to start up either cpu vs human or cpu vs cpu or human vs human
+* TODO Write up a README for use at a dojo
+Maybe just put that into the demo.clj
