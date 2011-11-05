@@ -5,8 +5,6 @@ This is a toy project to do some practice.
 
 ## Usage
 
-At the minute when it is run it just kicks off a game between 2 cpu players, and outputs the result. I have bigger plans, however...
-
 $ lein trampoline run
 cpu1  = , ships sunk = []
 cpu2  = , ships sunk = []
