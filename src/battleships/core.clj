@@ -31,6 +31,10 @@
          (you-lost [this player-context opponent-context]
            (println (str name " lost!")))))))
 
+
+(defn test-player [player]
+  (engine/play player (make-random-cpu-player "cpu")))
+
 (defn -main
   "Sets up the game"
   [& args]
