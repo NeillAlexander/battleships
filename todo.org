@@ -3,6 +3,7 @@
 Keep a matrix with number of times each has played against each other.
 * TODO Display all registered players on the server / page
 * TODO Display the leaderboard on the front page of the server
+* TODO Persist the players somewhere
 * TODO Provide a way to update a player
 Don't want to have people overriding someone elses! When submit,
 provide an id? Use the namespace that was returned on creation.
