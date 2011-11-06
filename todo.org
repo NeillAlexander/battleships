@@ -6,7 +6,9 @@ To ensure that the implementation works before sending.
 i.e. need to be able to read it in with the reader, so can't use
 records etc
 ** TODO should have a submit function
-* TODO Make sure the game engine is resilient to dodgy input!
+** TODO Make the server return meaningful responses depending on how it went
+500 if failed to create player
+200 if success
 * TODO write the server which will allow people to submit a player for evaluation
 * TODO Server should play all players against each other
 Keep a matrix with number of times each has played against each other.
