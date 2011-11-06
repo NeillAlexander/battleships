@@ -1,6 +1,4 @@
 (ns battleships.client
-  (:import [java.io PushbackReader]
-           [battleships.engine ShipPosition])
   (:require [clojure.java.io :as io]
             [battleships.core :as core]
             [battleships.loader :as loader]
@@ -19,10 +17,11 @@
 
 (defn submit-player
   "Submit your player to the server."
-  ([player-ns-file]
-     (submit-player player-ns-file "http://localhost:3000/upload"))
-  ([player-ns-file server-address]
+  ([player-ns-file name]
+     (submit-player player-ns-file name "http://localhost:3000/upload"))
+  ([player-ns-file name server-address]
      (println (str "Submitting to " server-address))
      (if (loader/valid-player-ns? (loader/eval-ns player-ns-file))       
        (http/post server-address {:body (slurp player-ns-file)
-                                  :content-type "text/plain"}))))
+                                  :content-type "text/plain"
+                                  :query-params {:name name}}))))

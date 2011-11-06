@@ -3,21 +3,19 @@
   (:require [battleships.loader :as loader]
             [compojure.route :as route]
             [compojure.handler :as handler]
-            [ring.middleware.multipart-params :as mp]))
+            [ring.util.response :as resp]))
 
 
 (defn upload
-  [s]
+  [s name]
   (if-let [player-ns (loader/eval-ns s)]
-    (do
-      (println player-ns)
-      (println (loader/make-player player-ns))
-      (str "Uploaded: " player-ns))
-    ("Failed")))
+    (let [player (loader/make-player player-ns name)]
+      (str player-ns))
+    (resp/status "Upload failed" 500)))
 
 (defroutes main-routes
   (GET "/" [] "<h1>Battleships</h1>")
-  (POST "/upload" request (upload (:body request)))
+  (POST "/upload" {:keys [body params] :as request} (upload body (:name params)))
   (route/resources "/")
   (route/not-found "Page not found"))
 

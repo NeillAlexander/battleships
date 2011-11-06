@@ -54,21 +54,22 @@
 
 (defn make-player
   "Reify the player using the functions from the namespace."
-  [player-ns]
-  (let [name "Test player"]
-    (reify engine/Player
-      (get-name [this] name)
-      (bot? [this] true)
-      (ship-position [this ship]
-        (let [pos ((ns-resolve player-ns 'place-ship) ship)]
-          (ShipPosition. (:square pos) (:orientation pos))))
-      (next-shot [this player-context opponent-context]
-        ((ns-resolve player-ns 'next-shot) player-context opponent-context))         
-      (you-won [this {:keys [last-shot last-result hits misses ships-sunk]} opponent-context]
-        (println (str name " " last-shot " = " last-result ", ships sunk = " ships-sunk))
-        (println (str name " won in " (+ (count hits) (count misses)) " shots!")))
-      (you-lost [this player-context opponent-context]
-        (println (str name " lost!"))))))
+  ([player-ns]
+     (make-player player-ns "Test Player"))
+  ([player-ns name]
+     (reify engine/Player
+       (get-name [this] name)
+       (bot? [this] true)
+       (ship-position [this ship]
+         (let [pos ((ns-resolve player-ns 'place-ship) ship)]
+           (ShipPosition. (:square pos) (:orientation pos))))
+       (next-shot [this player-context opponent-context]
+         ((ns-resolve player-ns 'next-shot) player-context opponent-context))         
+       (you-won [this {:keys [last-shot last-result hits misses ships-sunk]} opponent-context]
+         (println (str name " " last-shot " = " last-result ", ships sunk = " ships-sunk))
+         (println (str name " won in " (+ (count hits) (count misses)) " shots!")))
+       (you-lost [this player-context opponent-context]
+         (println (str name " lost!"))))))
 
 (defn cleanup-ns
   [player-ns]
