@@ -22,6 +22,8 @@ This will provide a way to rank players.
 ** TODO Need to provide built in game stat support rather than relying on player implementation
 ** TODO plot a graph using incanter to show this - acts as benchmark for improving
 * TODO write a web front end for viewing the server stats
+* TODO find a way to lock down the code that is eval'd
+Clojail? Or write my own custom thing?
 * TODO provide a way to have a tournament
 * TODO in tournament mode, provide a way to watch players go against each other
 * TODO Write up a README for use at a dojo

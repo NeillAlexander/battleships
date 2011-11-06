@@ -10,7 +10,7 @@
                      :submarine (ShipPosition. "d1" :h)
                      :patrol-boat (ShipPosition. "e1" :h)})
 
-;; failing because try to place to ships on a1
+;; failing because try to place 2 ships on a1
 (def failing-positions {:aircraft-carrier (ShipPosition. "a1" :h),
                         :battleship (ShipPosition. "a1" :h),
                         :destroyer (ShipPosition. "c1" :h)
@@ -20,7 +20,7 @@
 (defn make-test-player
   ([name positions-map result-atom]
      ;; default shots first 5 sink ac, next misses, last fails
-     (make-test-player name positions-map result-atom ["a1" "a2" "a3" "a4" "a5" "a6" "a11"]))
+     (make-test-player name positions-map result-atom ["a1" "a2" "a3" nil "a4" "a5" "a6" "a11"]))
   ([name positions-map result-atom shots]
      (let [num-shots (atom 0)]
        (reify Player
@@ -79,7 +79,7 @@
 ;; hence player1 will win because it goes first
 ;; there are also a couple of misses and one invalid square thrown in
 (deftest test-run-game-loop
-  (let [shots ["a1" "a2" "a3" "a4" "a5"
+  (let [shots ["a1" "a2" "a3" "a4" "a5" nil
                "b1" "b2" "b3" "b4" "b5" "b6" "b20"
                "c1" "c2" "c3"
                "d1" "d2" "d3"

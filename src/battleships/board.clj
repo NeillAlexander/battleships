@@ -58,13 +58,16 @@
 ;; functions that generate the indices of the squares when placing a ship
 (defmulti squares
   "Works out the sequence of squares that will be used for the ship."
-  (fn [coords length orientation] orientation))
+  (fn [coords length orientation]
+    (if (#{:v :h} orientation)
+      orientation)))
 
 ;; horizontal orientation
 (defmethod squares :h [coords length _]
-  (let [row (row coords)
-        col (column coords)]
-    (take length (map str (repeat row) (iterate inc col)))))
+  (if coords
+    (let [row (row coords)
+          col (column coords)]
+      (take length (map str (repeat row) (iterate inc col))))))
 
 ;; vertical orientation
 (defmethod squares :v [coords length _]
@@ -72,16 +75,23 @@
         col (column coords)]
     (take length (map str (map int-to-row (iterate inc row-num)) (repeat col)))))
 
+(defmethod squares :invalid [_ _ _]
+  nil)
+
+(defmethod squares nil [_ _ _]
+  nil)
+
 (defn between [n l h]
   (and (>= n l) (<= n h)))
 
 ;; function to validate that square is within boundary (needed for placing ships)
 (defn valid-square? [{:keys [width height] :as board} coord]
-  (let [row-num (row-to-int (row coord))
-        col-num (dec (column coord))]
-    (and
-     (between row-num 0 (dec height))
-     (between col-num 0 (dec width)))))
+  (if coord
+    (let [row-num (row-to-int (row coord))
+          col-num (dec (column coord))]
+      (and
+       (between row-num 0 (dec height))
+       (between col-num 0 (dec width))))))
 
 (defn invalid-square? [board coord]
   (not (valid-square? board coord)))
