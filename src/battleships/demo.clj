@@ -16,7 +16,6 @@
   "The ship is a map which represents the ship. You must return a map with the square you want to place it, and the orientation (:v is vertical, :h is horizontal)"
   [ship]
   (let [pos (ship-positions (:key ship))]
-    (println (str "Placing " ship " at " pos))
     pos))
 
 (def rows ["A" "B" "C" "D" "E" "F" "G" "H" "I" "J"])
@@ -27,5 +26,4 @@
   [context opponent-context]
   (let [next-shot (str (rows (rand-int 10))
                        (columns (rand-int 10)))]
-    (println (str "Shooting at " next-shot))
     next-shot))

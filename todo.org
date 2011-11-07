@@ -1,9 +1,8 @@
 
 * TODO Server should play all players against each other
 ** DONE Keep a matrix with number of times each has played against each other.
-** TODO Update the player scores at end of each match
-See the server/play-match function
-** TODO Update the match up tally at end of each match
+** TODO Update the player scores and match tally at end of each match
+And how come the cpu always wins? Something not right there...
 ** TODO Loop round playing matches until the limit is hit
 ** TODO Make the match playing asynchronous
 * TODO Display the leaderboard on the front page of the server

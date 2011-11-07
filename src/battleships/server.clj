@@ -37,21 +37,46 @@
     (if-not (same-players? player new-player)
       (create-match-up! player new-player))))
 
-(defn play-match! [match limit]
-  (let [[player1-ns player2-ns] (string/split (key match) #"-")
-        num-games (val match)
+(defn update-winner! [winner-ns]
+  (println (str "Winner is " winner-ns))
+  (swap! players update-in [winner-ns :won] inc)
+  (swap! players update-in [winner-ns :played] inc))
+
+(defn update-loser! [loser-ns]
+  (println (str "Loser is " loser-ns))
+  (swap! players update-in [loser-ns :lost] inc)
+  (swap! players update-in [loser-ns :played] inc))
+
+(defn record-match-result!
+  [player1-ns player2-ns winner]
+  (println (str "winner key is " winner))
+  (cond
+   (= :player1 winner) (do (update-winner! player1-ns)
+                           (update-loser! player2-ns))
+   (= :player2 winner) (do (update-winner! player2-ns)
+                           (update-loser! player1-ns))))
+
+(defn inc-match-count! [[match-id num-matches]]
+  (println (str match-id) " " num-matches)
+  (swap! match-tracker assoc match-id (inc num-matches)))
+
+(defn play-match! [[match-id num-matches] remaining]
+  (let [[player1-ns player2-ns] (string/split match-id #"-")
         player-map @players
         player1 (player-map player1-ns)
         player2 (player-map player2-ns)]
-    (println (str "Ready to play match between " player1-ns " and " player2-ns " " num-games))
-    (let [{:keys [winner loser]} (engine/play (:impl player1) (:impl player2))]
-      (println winner))))
+    (let [{:keys [winner loser] :as game} (engine/play (:impl player1) (:impl player2))]
+      (println game)
+      (record-match-result! player1-ns player2-ns winner)
+      (inc-match-count! [match-id num-matches])
+      (if (> remaining 0)
+        (recur [match-id (inc num-matches)] (dec remaining))))))
 
 (defn play-all-outstanding-games
   "Play all the matches up to the limit."
   [limit]
   (doseq [match @match-tracker :when (< (val match) limit)]
-    (play-match! match limit)))
+    (play-match! match (- limit (val match)))))
 
 (defn register-player!
   [player player-ns]  

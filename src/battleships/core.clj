@@ -13,11 +13,9 @@
        (bot? [this] true)
        (ship-position [this ship]
          (let [pos (demo/place-ship ship)]
-           (println (str name " trying to place " (:name ship) " at " pos))
            pos))
        (next-shot [this {:keys [last-shot last-result hits misses ships-sunk] :as context}
                    opponent-context]
-         (println (str name " " last-shot " = " last-result ", ships sunk = " ships-sunk))
          (demo/next-shot context opponent-context))         
        (you-won [this {:keys [last-shot last-result hits misses ships-sunk]} opponent-context]
          (println (str name " " last-shot " = " last-result ", ships sunk = " ships-sunk))

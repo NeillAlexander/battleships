@@ -208,7 +208,10 @@
 (defn generate-stats
   "For now this just returns the game."
   [game]
-  game)
+  (cond
+   (get-in game [:player1 :failed]) (assoc game :winner :player2)
+   (get-in game [:player2 :failed]) (assoc game :winner :player1)
+   :else game))
 
 (defn play
   "Call this to start a new game with the 2 players. Returns the stats for the game."
