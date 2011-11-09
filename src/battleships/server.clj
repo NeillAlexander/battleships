@@ -10,7 +10,8 @@
             [clojure.string :as string]))
 
 
-(def players (atom {}))
+(def players (ref {}))
+(def players-by-name (ref {}))
 (def match-tracker (atom {}))
 
 (defn make-registered-player [player player-ns]
@@ -39,13 +40,15 @@
 
 (defn update-winner! [winner-ns]
   (println (str "Winner is " winner-ns))
-  (swap! players update-in [winner-ns :won] inc)
-  (swap! players update-in [winner-ns :played] inc))
+  (dosync
+   (alter players update-in [winner-ns :won] inc)
+   (alter players update-in [winner-ns :played] inc)))
 
 (defn update-loser! [loser-ns]
   (println (str "Loser is " loser-ns))
-  (swap! players update-in [loser-ns :lost] inc)
-  (swap! players update-in [loser-ns :played] inc))
+  (dosync
+   (alter players update-in [loser-ns :lost] inc)
+   (alter players update-in [loser-ns :played] inc)))
 
 (defn record-match-result!
   [player1-ns player2-ns winner]
@@ -75,7 +78,6 @@
           player2 (player-map player2-ns)]
       (println "----------------------------------------------")
       (let [{:keys [winner loser] :as game} (engine/play (:impl player1) (:impl player2))]
-        (println game)
         (record-match-result! player1-ns player2-ns winner)
         (recur match-id limit)))))
 
@@ -93,25 +95,45 @@
 (defn register-player!
   [player player-ns]
   (let [registered-player (make-registered-player player player-ns)]
-    (swap! players assoc (str player-ns) registered-player)
+    (dosync
+     (alter players assoc (str player-ns) registered-player)
+     (alter players-by-name assoc (:name registered-player) registered-player))
     (update-match-tracker! registered-player)))
 
 ;; always have the computer in here to play against people
 (register-player! (core/make-random-cpu-player "cpu1") 'battleships.core)
 
+(defn player-exists? [name]
+  (println @players-by-name)
+  (@players-by-name name))
+
+(defn existing-player-id-matches? [name id]
+  (if-let [existing-player (player-exists? name)]
+    (do
+      (println (str (:namespace existing-player) " matches " ))
+      (= (symbol id) (:namespace existing-player)))))
+
 (defn upload
-  [s name]
-  (if-let [player-ns (loader/eval-ns s)]
-    (let [player (loader/make-player player-ns name)]
-      (register-player! player player-ns)
-      (async-play-all-outstanding-games 10)
-      (str player-ns))
-    (resp/status "Upload failed" 500)))
+  [s name id]
+  (if (player-exists? name)
+    ;; id needs to match else fail
+    (if (existing-player-id-matches? name id)
+      "need to update"
+      "Failed: player id doesn't match")
+    ;; new player so go ahead and add
+    (if-let [player-ns (loader/eval-ns s)]
+      (let [player (loader/make-player player-ns name)]
+        (register-player! player player-ns)
+        (async-play-all-outstanding-games 10)
+        (str player-ns))
+      (resp/status "Upload failed" 500))))
 
 ;; These are the various pages the server provides.
 (defroutes main-routes
   (GET "/" [] (view/main-page @players))
-  (POST "/upload" {:keys [body params] :as request} (upload body (:name params)))
+  (POST "/upload" {:keys [body params] :as request} (upload body
+                                                            (:name params)
+                                                            (:id params)))
   (route/resources "/")
   (route/not-found "Page not found"))
 

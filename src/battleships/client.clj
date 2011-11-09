@@ -15,13 +15,25 @@
         (println "invalid player"))
       (loader/cleanup-ns player-ns))))
 
+(defn- post-to-server
+  [player-ns-file name id server-address]
+  (if (loader/valid-player-ns? (loader/eval-ns player-ns-file))
+    (do
+      (println (str "Submitting to " server-address))
+      (http/post server-address {:body (slurp player-ns-file)
+                                 :content-type "text/plain"
+                                 :query-params {:name name :id id}}))))
+
 (defn submit-player
   "Submit your player to the server."
   ([player-ns-file name]
      (submit-player player-ns-file name "http://localhost:3000/upload"))
   ([player-ns-file name server-address]
-     (println (str "Submitting to " server-address))
-     (if (loader/valid-player-ns? (loader/eval-ns player-ns-file))       
-       (http/post server-address {:body (slurp player-ns-file)
-                                  :content-type "text/plain"
-                                  :query-params {:name name}}))))
+     (post-to-server player-ns-file name nil server-address)))
+
+(defn update-player
+  "Use this when you want to overwrite your current player. You need the id returned from the original submission."
+  ([player-ns-file id name]
+     (update-player player-ns-file id name "http://localhost:3000/upload"))
+  ([player-ns-file id name server-address]
+     (post-to-server player-ns-file name id server-address)))
