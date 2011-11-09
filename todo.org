@@ -5,7 +5,6 @@ way teams can update their own player, all names are guaranteed to be
 unique.
 * TODO Error handling still not good enough when players return bad data
 Write a chaos monkey player
-* TODO Persist the players somewhere
 * TODO Provide a way to browse the source for a player
 * TODO find a way to lock down the code that is eval'd
 Clojail? Or write my own custom thing?
@@ -27,3 +26,5 @@ Maybe just put that into the demo.clj
 *** TODO number of shots
 *** TODO avg / mean / median / standard deviation etc
 This will provide a way to rank players.
+** TODO Persist the players somewhere
+Redis? Other key value data store?
