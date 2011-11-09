@@ -6,7 +6,11 @@
 ;; tests that the board has been updated
 (deftest test-place-ship
   (is (= 2 (get-in (place-ship (new-player "Player") :aircraft-carrier "a1" :h)  [:board :squares 0])))
-  (is (nil? (place-ship (new-player "Player") :aircraft-carrier "a9" :h))))
+  (is (nil? (place-ship (new-player "Player") :aircraft-carrier "a9" :h)))
+  (is (nil? (place-ship (new-player "Player") :aircraft-carrier nil :h)))
+  (is (nil? (place-ship (new-player "Player") :aircraft-carrier "a1" nil)))
+  (is (nil? (place-ship (new-player "Player") :aircraft-carrier "a1" :x)))
+  (is (nil? (place-ship (new-player "Player") :aircraft-carrier nil nil))))
 
 (deftest test-all-ships-placed?
   (let [p1 (-> (new-player "p1")
@@ -26,6 +30,7 @@
 (deftest test-fire-shell
   (let [p1 (new-player "p1")]
     (is (nil? (fire-shell p1 "a12")))
+    (is (nil? (fire-shell p1 nil)))
     (is (board/shelled? (:board (fire-shell p1 "a1")) "a1"))))
 
 (deftest test-update-hits

@@ -133,13 +133,18 @@
 (defn sq-empty? [board coord]
   (not (sq-occupied? board coord)))
 
+(defn valid-ship-coords? [coord orientation]
+  (and (and coord orientation)
+       (#{:h :v} orientation)))
+
 (defn place-ship
   "Tags the squares with the details of the ship, if not occupied"
   [{:keys [length key] :as ship} board coord orientation]
-  (let [sqrs (squares coord length orientation)]
-    (if (and (every? (partial valid-square? board) sqrs)
-             (every? (partial sq-empty? board) sqrs))
-      (reduce (partial tag key) board sqrs))))
+  (when (valid-ship-coords? coord orientation)
+    (let [sqrs (squares coord length orientation)]
+      (if (and (every? (partial valid-square? board) sqrs)
+               (every? (partial sq-empty? board) sqrs))
+        (reduce (partial tag key) board sqrs)))))
 
 (defn fire-shell
   "This is the command for firing a shell at a square, specified by coord."
