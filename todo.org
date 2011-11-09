@@ -4,15 +4,17 @@
 ** DONE Update the player scores and match tally at end of each match
 And how come the cpu always wins? Something not right there...
 ** DONE Loop round playing matches until the limit is hit
-** TODO Make the match playing asynchronous
+* TODO Make the match playing asynchronous
+* TODO Provide a way to update a player
+When you submit, if the player name already exists, then reject it
+unless the same namespace is provided, in which case update it. That
+way teams can update their own player, all names are guaranteed to be
+unique.
 * TODO Display the leaderboard on the front page of the server
 Sort by the most wins
 * TODO Error handling still not good enough when players return bad data
 Write a chaos monkey player
 * TODO Persist the players somewhere
-* TODO Provide a way to update a player
-Don't want to have people overriding someone elses! When submit,
-provide an id? Use the namespace that was returned on creation.
 * TODO in server keep track of the best results
 ** TODO win / loss ratio
 ** TODO number of shots
