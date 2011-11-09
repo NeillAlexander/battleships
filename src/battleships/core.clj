@@ -13,7 +13,7 @@
        (bot? [this] true)
        (ship-position [this ship]
          (let [pos (demo/place-ship ship)]
-           pos))
+           (ShipPosition. (:square pos) (:orientation pos))))
        (next-shot [this {:keys [last-shot last-result hits misses ships-sunk] :as context}
                    opponent-context]
          (demo/next-shot context opponent-context))         

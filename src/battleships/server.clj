@@ -65,6 +65,9 @@
         player-map @players
         player1 (player-map player1-ns)
         player2 (player-map player2-ns)]
+    (println "----------------------------------------------")
+    (println "----------------------------------------------")
+    (println "----------------------------------------------")
     (let [{:keys [winner loser] :as game} (engine/play (:impl player1) (:impl player2))]
       (println game)
       (record-match-result! player1-ns player2-ns winner)
@@ -79,7 +82,7 @@
     (play-match! match (- limit (val match)))))
 
 (defn register-player!
-  [player player-ns]  
+  [player player-ns]
   (let [registered-player (make-registered-player player player-ns)]
     (swap! players assoc (str player-ns) registered-player)
     (update-match-tracker! registered-player)))
