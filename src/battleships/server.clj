@@ -61,24 +61,27 @@
   (swap! match-tracker assoc match-id (inc num-matches)))
 
 (defn play-match! [[match-id num-matches] remaining]
+  (println (str match-id " played " num-matches ", remaining " remaining))
   (let [[player1-ns player2-ns] (string/split match-id #"-")
         player-map @players
         player1 (player-map player1-ns)
         player2 (player-map player2-ns)]
     (println "----------------------------------------------")
-    (println "----------------------------------------------")
-    (println "----------------------------------------------")
-    (let [{:keys [winner loser] :as game} (engine/play (:impl player1) (:impl player2))]
+    (let [remaining (dec remaining)
+          {:keys [winner loser] :as game} (engine/play (:impl player1) (:impl player2))]
       (println game)
       (record-match-result! player1-ns player2-ns winner)
       (inc-match-count! [match-id num-matches])
       (if (> remaining 0)
-        (recur [match-id (inc num-matches)] (dec remaining))))))
+        (recur [match-id (inc num-matches)] remaining)))))
+
+(defn matches-played [match]
+  (val match))
 
 (defn play-all-outstanding-games
   "Play all the matches up to the limit."
   [limit]
-  (doseq [match @match-tracker :when (< (val match) limit)]
+  (doseq [match @match-tracker :when (< (matches-played match) limit)]
     (play-match! match (- limit (val match)))))
 
 (defn register-player!
