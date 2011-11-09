@@ -56,33 +56,39 @@
    (= :player2 winner) (do (update-winner! player2-ns)
                            (update-loser! player1-ns))))
 
-(defn inc-match-count! [[match-id num-matches]]
-  (println (str match-id) " " num-matches)
-  (swap! match-tracker assoc match-id (inc num-matches)))
+(defn inc-match-count-if-below-limit!
+  "Returns truthy if the number of matches was incremented, else falsey."
+  [match-id limit]
+  (let [current-match-tracker @match-tracker
+        num-matches (current-match-tracker match-id)]
+    (if (< num-matches limit)
+      (compare-and-set! match-tracker current-match-tracker
+                        (assoc current-match-tracker match-id (inc num-matches))))))
 
-(defn play-match! [[match-id num-matches] remaining]
-  (println (str match-id " played " num-matches ", remaining " remaining))
-  (let [[player1-ns player2-ns] (string/split match-id #"-")
-        player-map @players
-        player1 (player-map player1-ns)
-        player2 (player-map player2-ns)]
-    (println "----------------------------------------------")
-    (let [remaining (dec remaining)
-          {:keys [winner loser] :as game} (engine/play (:impl player1) (:impl player2))]
-      (println game)
-      (record-match-result! player1-ns player2-ns winner)
-      (inc-match-count! [match-id num-matches])
-      (if (> remaining 0)
-        (recur [match-id (inc num-matches)] remaining)))))
-
-(defn matches-played [match]
-  (val match))
+(defn play-match! [match-id limit]
+  ;; check to see if we need to play the match by atomically checking the
+  ;; number of matches against the limit
+  (if (inc-match-count-if-below-limit! match-id limit)
+    (let [[player1-ns player2-ns] (string/split match-id #"-")
+          player-map @players
+          player1 (player-map player1-ns)
+          player2 (player-map player2-ns)]
+      (println "----------------------------------------------")
+      (let [{:keys [winner loser] :as game} (engine/play (:impl player1) (:impl player2))]
+        (println game)
+        (record-match-result! player1-ns player2-ns winner)
+        (recur match-id limit)))))
 
 (defn play-all-outstanding-games
   "Play all the matches up to the limit."
   [limit]
-  (doseq [match @match-tracker :when (< (matches-played match) limit)]
-    (play-match! match (- limit (val match)))))
+  (doseq [[match-id matches-played] @match-tracker]
+    (play-match! match-id limit)))
+
+(defn async-play-all-outstanding-games
+  [limit]
+  (.start (Thread. (partial play-all-outstanding-games limit))))
+
 
 (defn register-player!
   [player player-ns]
@@ -98,7 +104,7 @@
   (if-let [player-ns (loader/eval-ns s)]
     (let [player (loader/make-player player-ns name)]
       (register-player! player player-ns)
-      (play-all-outstanding-games 10)
+      (async-play-all-outstanding-games 10)
       (str player-ns))
     (resp/status "Upload failed" 500)))
 
