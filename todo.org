@@ -3,8 +3,6 @@ When you submit, if the player name already exists, then reject it
 unless the same namespace is provided, in which case update it. That
 way teams can update their own player, all names are guaranteed to be
 unique.
-* TODO Display the leaderboard on the front page of the server
-Sort by the most wins
 * TODO Error handling still not good enough when players return bad data
 Write a chaos monkey player
 * TODO Persist the players somewhere
