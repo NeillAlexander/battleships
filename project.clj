@@ -5,7 +5,8 @@
                  [ring/ring-jetty-adapter "1.0.0-beta2"]
                  [compojure "0.6.5"]
                  [clj-http "0.2.3"]
-                 [hiccup "0.3.7"]]
+                 [hiccup "0.3.7"]
+                 [clojail "0.5.0"]]
   :dev-dependencies [[lein-ring "0.4.5"]]
   :main battleships.core
   :ring {:handler battleships.server/handler})
