@@ -12,6 +12,8 @@ Mandatory:
   		permission java.security.AllPermission;
 		};
 		'''
+	- Email Bruce about the idea
+		Emphasize that there is no pressure! It was just something that I thought might be fun.
 		
 Optional:
 	- provide a way to have a tournament
