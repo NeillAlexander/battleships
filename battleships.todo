@@ -1,7 +1,4 @@
 Mandatory:
-	- Provide a way to browse the source for a player @done
-	- Fix bug where update means the wrong number of games are played for updated players. @done
-		Problem is we don't update the registration when player is updated.
 	- find a way to lock down the code that is eval'd
 		Clojail? Or write my own custom thing?
 	- Error handling still not good enough when players return bad data
