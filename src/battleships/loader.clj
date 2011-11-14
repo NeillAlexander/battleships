@@ -3,7 +3,9 @@
            [battleships.engine ShipPosition])
   (:require [clojure.java.io :as io]
             [battleships.game :as game]
-            [battleships.engine :as engine]))
+            [battleships.engine :as engine]
+            [clojail.core :as clojail]
+            [clojail.testers :as testers]))
 
 (defn read-ns
   "Returns a vector containing the forms from the file."
@@ -28,12 +30,13 @@
   ([ns-file]
     (eval-ns ns-file (gensym "player")))
   ([ns-file player-ns]
-    (if (find-ns player-ns)
-      (remove-ns player-ns))
-    (let [ns-code (if (vector? ns-file) ns-file (read-ns ns-file))] 
-      (binding [*ns* *ns*]
-        (doall (map eval (add-in-ns (replace-ns ns-code player-ns))))
-        player-ns))))
+    (when (find-ns player-ns)
+      (remove-ns player-ns))    
+    (let [sb (clojail/sandbox testers/secure-tester-without-def :namespace player-ns)]      
+      (let [ns-code (if (vector? ns-file) ns-file (read-ns ns-file))] 
+        (binding [*ns* *ns*]
+          (doall (map sb (filter #(not (ns-form? %)) ns-code)))
+          player-ns)))))
 
 (defn update-ns
   "Updates the player namespace, clearing out the original one first."

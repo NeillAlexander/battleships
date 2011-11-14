@@ -1,6 +1,4 @@
 Mandatory:
-	- find a way to lock down the code that is eval'd
-		Clojail? Or write my own custom thing?
 	- Error handling still not good enough when players return bad data
 		Write a chaos monkey player
 	- lein marg the code and look for improvements in:
@@ -8,6 +6,12 @@ Mandatory:
 		- common functions that can be factored out / improved
 	- Write up a README for use at a dojo
 		Maybe just put that into the demo.clj
+	- Add a note about the requirement to install the ~/.java.policy file
+		'''
+		grant {
+  		permission java.security.AllPermission;
+		};
+		'''
 		
 Optional:
 	- provide a way to have a tournament

@@ -23,7 +23,7 @@
 	</buildSpec>
 	<natures>
 		<nature>org.eclipse.jdt.core.javanature</nature>
-		<nature>ccw.nature</nature>
 		<nature>org.eclipse.xtext.ui.shared.xtextNature</nature>
+		<nature>ccw.nature</nature>
 	</natures>
 </projectDescription>
