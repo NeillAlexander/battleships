@@ -9,7 +9,10 @@
             [:td {:align "center"} won] [:td {:align "center"} lost]])]))
 
 (defn make-player-view [registered-player]
-  (html [:pre (:code registered-player)]))
+  (html [:h2 (:name registered-player) ]
+        [:div "Created: " (:created registered-player)]
+        [:div "Updated: " (:updated registered-player)]
+        [:pre (:code registered-player)]))
 
 (defn main-page [players]
   (html [:h1 "Battleships"]

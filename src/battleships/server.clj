@@ -24,7 +24,8 @@
      :played 0
      :won 0
      :lost 0
-     :code (.toString sw)}))
+     :code (.toString sw)
+     :created (java.util.Date.)}))
 
 (defn same-players? [player1 player2]
   (= (:namespace player1) (:namespace player2)))
@@ -101,12 +102,17 @@
 
 (defn register-player!
   [player player-ns code]
-  (let [registered-player (make-registered-player player player-ns code)]
-    (when-not (player-exists? (:name registered-player)) 
-      (dosync
-        (alter players assoc (str player-ns) registered-player)
-        (alter players-by-name assoc (:name registered-player) registered-player)))
-    (update-match-tracker! registered-player)))
+  (let [player-name (engine/get-name player)
+        already-registered (player-exists? player-name)
+        registered-player (if already-registered 
+                            (assoc (@players (str player-ns)) :updated (java.util.Date.))
+                            (make-registered-player player player-ns code))]
+    (println registered-player)
+    (dosync
+      (alter players assoc (str player-ns) registered-player)
+      (alter players-by-name assoc (:name registered-player) registered-player))
+    (when-not already-registered
+      (update-match-tracker! registered-player))))
 
 ;; always have the computer in here to play against people
 (register-player! (core/make-random-cpu-player "cpu1") 'battleships.core "HIDDEN")
