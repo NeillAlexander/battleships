@@ -25,11 +25,20 @@
 
 (defn eval-ns
   "Evals the namespace and returns the ns name used."
-  [ns-file]
-  (binding [*ns* *ns*]
-    (let [player-ns (gensym "player")]
+  ([ns-file]
+    (eval-ns ns-file (gensym "player")))
+  ([ns-file player-ns]
+    (if (find-ns player-ns)
+      (remove-ns player-ns))
+    (binding [*ns* *ns*]
       (doall (map eval (add-in-ns (replace-ns (read-ns ns-file) player-ns))))
       player-ns)))
+
+(defn update-ns
+  "Updates the player namespace, clearing out the original one first."
+  [ns-file player-ns]
+  (if (find-ns player-ns)
+    (println "Ready to remove the namespace")))
 
 (defn valid-place-ship-result? [f]
   (let [result (f (second (first (game/new-ships))))]

@@ -1,10 +1,4 @@
 Mandatory:
-	
-	- Provide a way to update a player
-
-	  When you submit, if the player name already exists, then reject it unless the same namespace is provided, in which case update it. That way teams can update their own player, all names are guaranteed to be unique. The client side is done, just need to implement the update functionality on the server, then test it all works. There are 2 string placeholders in the update function where I need to plugin the functionality.
-
-	- Fix the resp/status in upload function - it doesn't work. Need to return a map??
 
 	- Error handling still not good enough when players return bad data
 		Write a chaos monkey player

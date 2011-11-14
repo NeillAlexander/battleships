@@ -27,13 +27,13 @@
 (defn submit-player
   "Submit your player to the server."
   ([player-ns-file name]
-     (submit-player player-ns-file name "http://localhost:3000/upload"))
+     (submit-player player-ns-file name "http://localhost:3000/create"))
   ([player-ns-file name server-address]
      (post-to-server player-ns-file name nil server-address)))
 
 (defn update-player
   "Use this when you want to overwrite your current player. You need the id returned from the original submission."
-  ([player-ns-file id name]
-     (update-player player-ns-file id name "http://localhost:3000/upload"))
-  ([player-ns-file id name server-address]
+  ([player-ns-file name id]
+     (update-player player-ns-file name id "http://localhost:3000/update"))
+  ([player-ns-file name id server-address]
      (post-to-server player-ns-file name id server-address)))

@@ -91,21 +91,21 @@
   [limit]
   (.start (Thread. (partial play-all-outstanding-games limit))))
 
+(defn player-exists? [name]
+  (println @players-by-name)
+  (@players-by-name name))
 
 (defn register-player!
   [player player-ns]
   (let [registered-player (make-registered-player player player-ns)]
-    (dosync
-     (alter players assoc (str player-ns) registered-player)
-     (alter players-by-name assoc (:name registered-player) registered-player))
+    (when-not (player-exists? (:name registered-player)) 
+      (dosync
+        (alter players assoc (str player-ns) registered-player)
+        (alter players-by-name assoc (:name registered-player) registered-player)))
     (update-match-tracker! registered-player)))
 
 ;; always have the computer in here to play against people
 (register-player! (core/make-random-cpu-player "cpu1") 'battleships.core)
-
-(defn player-exists? [name]
-  (println @players-by-name)
-  (@players-by-name name))
 
 (defn existing-player-id-matches? [name id]
   (if-let [existing-player (player-exists? name)]
@@ -113,25 +113,49 @@
       (println (str (:namespace existing-player) " matches " ))
       (= (symbol id) (:namespace existing-player)))))
 
-(defn upload
-  [s name id]
-  (if (player-exists? name)
-    ;; id needs to match else fail
-    (if (existing-player-id-matches? name id)
-      "need to update"
-      "Failed: player id doesn't match")
-    ;; new player so go ahead and add
-    (if-let [player-ns (loader/eval-ns s)]
-      (let [player (loader/make-player player-ns name)]
-        (register-player! player player-ns)
-        (async-play-all-outstanding-games 10)
-        (str player-ns))
-      (resp/status "Upload failed" 500))))
+(defn http-response 
+  ([body]
+    (http-response body 200))
+  ([body status]
+    (resp/status (resp/response body) status)))
+
+(defn http-error
+  [body]
+  (http-response body 500))
+
+(defn add-player
+  [player-ns nm]
+  (let [player (loader/make-player player-ns nm)]
+    (register-player! player player-ns)
+    (async-play-all-outstanding-games 10)
+    (str player-ns)))
+
+(defn create-player
+  "Creates a new player, unless a player of that name already exists."
+  [code nm]
+  (if (player-exists? nm)
+    (http-error (str "Failed: player " nm " already exists"))
+    (if-let [player-ns (loader/eval-ns code)]
+      (add-player player-ns nm)
+      (http-error (str "Failed: player " nm " already exists")))))
+
+(defn update-player
+  "Attempts to update the player, failing if a player of that name doesn't
+already exist, or the id doesn't match the player's id."
+  [code nm id]
+  (if (player-exists? nm)
+    (if (existing-player-id-matches? nm id)
+      (if-let [player-ns (loader/eval-ns code (symbol id))]
+        (add-player player-ns nm))
+      (http-error (str "Failed: id " id " does not match existing player's id")))
+    (http-error (str "Failed: no player " nm " found to update."))))
 
 ;; These are the various pages the server provides.
 (defroutes main-routes
   (GET "/" [] (view/main-page @players))
-  (POST "/upload" {:keys [body params] :as request} (upload body
+  (POST "/create" {:keys [body params] :as request} (create-player body
+                                                            (:name params)))
+  (POST "/update" {:keys [body params] :as request} (update-player body
                                                             (:name params)
                                                             (:id params)))
   (route/resources "/")
@@ -139,5 +163,3 @@
 
 (def handler
   (handler/site main-routes))
-
-
