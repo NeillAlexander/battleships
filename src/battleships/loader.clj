@@ -30,9 +30,10 @@
   ([ns-file player-ns]
     (if (find-ns player-ns)
       (remove-ns player-ns))
-    (binding [*ns* *ns*]
-      (doall (map eval (add-in-ns (replace-ns (read-ns ns-file) player-ns))))
-      player-ns)))
+    (let [ns-code (if (vector? ns-file) ns-file (read-ns ns-file))] 
+      (binding [*ns* *ns*]
+        (doall (map eval (add-in-ns (replace-ns ns-code player-ns))))
+        player-ns))))
 
 (defn update-ns
   "Updates the player namespace, clearing out the original one first."

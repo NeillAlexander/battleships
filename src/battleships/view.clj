@@ -5,8 +5,11 @@
   (html [:table
          [:tr [:th "Name"] [:th "Played"] [:th "Won"] [:th "Lost"]]
          (for [{:keys [name played won lost]} (sort (fn [x y] (> (:won x) (:won y))) (vals players))]
-           [:tr [:td name] [:td {:align "center"} played]
+           [:tr [:td [:a {:href (str "/view?name="name)} name]] [:td {:align "center"} played]
             [:td {:align "center"} won] [:td {:align "center"} lost]])]))
+
+(defn make-player-view [registered-player]
+  (html [:pre (:code registered-player)]))
 
 (defn main-page [players]
   (html [:h1 "Battleships"]

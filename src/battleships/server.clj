@@ -1,5 +1,6 @@
 (ns battleships.server
-  (:use compojure.core)
+  (:use [compojure.core]
+        [clojure.pprint])
   (:require [battleships.loader :as loader]
             [battleships.view :as view]
             [battleships.core :as core]
@@ -14,13 +15,16 @@
 (def players-by-name (ref {}))
 (def match-tracker (atom {}))
 
-(defn make-registered-player [player player-ns]
-  {:name (engine/get-name player)
-   :namespace player-ns
-   :impl player
-   :played 0
-   :won 0
-   :lost 0})
+(defn make-registered-player [player player-ns code]
+  (with-open [sw (java.io.StringWriter.)]
+    (pprint code sw)
+    {:name (engine/get-name player)
+     :namespace player-ns
+     :impl player
+     :played 0
+     :won 0
+     :lost 0
+     :code (.toString sw)}))
 
 (defn same-players? [player1 player2]
   (= (:namespace player1) (:namespace player2)))
@@ -96,8 +100,8 @@
   (@players-by-name name))
 
 (defn register-player!
-  [player player-ns]
-  (let [registered-player (make-registered-player player player-ns)]
+  [player player-ns code]
+  (let [registered-player (make-registered-player player player-ns code)]
     (when-not (player-exists? (:name registered-player)) 
       (dosync
         (alter players assoc (str player-ns) registered-player)
@@ -105,7 +109,7 @@
     (update-match-tracker! registered-player)))
 
 ;; always have the computer in here to play against people
-(register-player! (core/make-random-cpu-player "cpu1") 'battleships.core)
+(register-player! (core/make-random-cpu-player "cpu1") 'battleships.core "HIDDEN")
 
 (defn existing-player-id-matches? [name id]
   (if-let [existing-player (player-exists? name)]
@@ -124,9 +128,9 @@
   (http-response body 500))
 
 (defn add-player
-  [player-ns nm]
+  [player-ns nm code]
   (let [player (loader/make-player player-ns nm)]
-    (register-player! player player-ns)
+    (register-player! player player-ns code)
     (async-play-all-outstanding-games 10)
     (str player-ns)))
 
@@ -135,9 +139,11 @@
   [code nm]
   (if (player-exists? nm)
     (http-error (str "Failed: player " nm " already exists"))
-    (if-let [player-ns (loader/eval-ns code)]
-      (add-player player-ns nm)
-      (http-error (str "Failed: player " nm " already exists")))))
+    (if-let [ns-code (loader/read-ns code)] 
+      (if-let [player-ns (loader/eval-ns ns-code)]
+        (add-player player-ns nm ns-code)
+        (http-error (str "Failed: player " nm " already exists")))
+      (http-error (str "Failed: couldn't read player code")))))
 
 (defn update-player
   "Attempts to update the player, failing if a player of that name doesn't
@@ -145,14 +151,22 @@ already exist, or the id doesn't match the player's id."
   [code nm id]
   (if (player-exists? nm)
     (if (existing-player-id-matches? nm id)
-      (if-let [player-ns (loader/eval-ns code (symbol id))]
-        (add-player player-ns nm))
+      (if-let [ns-code (loader/read-ns code)]
+        (if-let [player-ns (loader/eval-ns ns-code (symbol id))]
+          (add-player player-ns nm ns-code))
+        (http-error (str "Failed: error while loading code")))
       (http-error (str "Failed: id " id " does not match existing player's id")))
     (http-error (str "Failed: no player " nm " found to update."))))
+
+(defn view-player [name]
+  (if (player-exists? name)
+    (view/make-player-view (@players-by-name name))
+    (str name " not found")))
 
 ;; These are the various pages the server provides.
 (defroutes main-routes
   (GET "/" [] (view/main-page @players))
+  (GET "/view" {:keys [params]} (view-player (:name params)))
   (POST "/create" {:keys [body params] :as request} (create-player body
                                                             (:name params)))
   (POST "/update" {:keys [body params] :as request} (update-player body

@@ -1,26 +1,19 @@
 Mandatory:
-
-	- Error handling still not good enough when players return bad data
-		Write a chaos monkey player
-
-	- Provide a way to browse the source for a player
-
+	- Provide a way to browse the source for a player @done
+	- Fix bug where update means the wrong number of games are played for updated players.
 	- find a way to lock down the code that is eval'd
 		Clojail? Or write my own custom thing?
-
-	- provide a way to have a tournament
-
-	- in tournament mode, provide a way to watch players go against each other
-
+	- Error handling still not good enough when players return bad data
+		Write a chaos monkey player
 	- lein marg the code and look for improvements in:
 		- comments
 		- common functions that can be factored out / improved
-
 	- Write up a README for use at a dojo
 		Maybe just put that into the demo.clj
 		
 Optional:
-	
+	- provide a way to have a tournament
+	- in tournament mode, provide a way to watch players go against each other	
 	- do some analysis to work out the stats for average number of shots to win etc
 	- Need to provide built in game stat support rather than relying on player implementation
 		- plot a graph using incanter to show this - acts as benchmark for improving
