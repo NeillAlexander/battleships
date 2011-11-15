@@ -32,7 +32,7 @@
   ([ns-file player-ns]
     (when (find-ns player-ns)
       (remove-ns player-ns))    
-    (let [sb (clojail/sandbox testers/secure-tester-without-def :namespace player-ns)]      
+    (let [sb (clojail/sandbox testers/secure-tester-without-def :namespace player-ns :max-defs 1000)]      
       (let [ns-code (if (vector? ns-file) ns-file (read-ns ns-file))] 
         (binding [*ns* *ns*]
           (doall (map sb (filter #(not (ns-form? %)) ns-code)))
