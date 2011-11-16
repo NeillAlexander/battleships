@@ -9,10 +9,8 @@
                      :submarine {:square "d1" :orientation :h} 
                      :patrol-boat {:square "e1" :orientation :h}})
 
-(def chaos-keys [:normal :nil :exception :rand-number :rand-string])
-
 (defn chaos-fn [normal-fn & args]
-  (condp = (rand-nth chaos-keys)
+  (condp = (rand-nth [:normal :nil :exception :rand-number :rand-string])
     :normal (apply normal-fn args)
     :nil nil
     :exception (throw (RuntimeException. "Feed me bananas!!"))

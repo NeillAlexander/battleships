@@ -40,7 +40,9 @@
         else-clause (rest else)]
     `(loop [num-attempts# 0]
        (if-not (and (> num-attempts# ~(:limited-to limit-map)) ~(:when limit-map))
-         (if-let [result# ~attempt-clause]
+         (if-let [result# (try 
+                            ~attempt-clause
+                            (catch Exception e# (println "Caught Exception: " (.getMessage e#))))]
            result#
            (recur (inc num-attempts#)))
          ~(first else-clause)))))

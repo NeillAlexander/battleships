@@ -1,8 +1,4 @@
 Mandatory:
-	- Error handling still not good enough when players return bad data
-		Write a chaos monkey player
-		- Make the submit run a full game (using test) before sending to the server.
-		- Need to catch exceptions and carry on in the attempt macro.
 	- lein marg the code and look for improvements in:
 		- comments
 		- common functions that can be factored out / improved
