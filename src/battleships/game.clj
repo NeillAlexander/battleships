@@ -1,3 +1,5 @@
+;; This is the next layer up from the board, building out the DSL to provide the functions required
+;; to play the game. Now we have the concept of players etc.
 (ns battleships.game
   (:require [battleships.board :as board]))
 

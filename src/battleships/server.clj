@@ -1,3 +1,5 @@
+;; The server is what will run in the dojo for everyone to submit players to. It handles scheduling
+;; games between all the submitted players, and displaying the results in a simple web-page.
 (ns battleships.server
   (:use [compojure.core]
         [clojure.pprint])
@@ -10,11 +12,12 @@
             [ring.util.response :as resp]
             [clojure.string :as string]))
 
-
+;; Server state
 (def players (ref {}))
 (def players-by-name (ref {}))
 (def match-tracker (atom {}))
 
+;; The data structure for all the players that are submitted, used to track wins etc.
 (defn make-registered-player [player player-ns code]
   (with-open [sw (java.io.StringWriter.)]
     (pprint code sw)
@@ -30,6 +33,8 @@
 (defn same-players? [player1 player2]
   (= (:namespace player1) (:namespace player2)))
 
+;; When a new player is added we create a match up between it and all other players. This
+;; is used to track and schedule all the required matches.
 (defn create-match-up!
   ([player1 player2]
      (create-match-up! player1 player2 true))
@@ -38,6 +43,7 @@
        (swap! match-tracker assoc match-id 0)
        (if match1? (recur player2 player1 false)))))
 
+;; Set of functions to update the server state after matches have been played.
 (defn update-match-tracker! [new-player]
   (doseq [player (vals @players)]
     (if-not (same-players? player new-player)
@@ -64,6 +70,7 @@
    (= :player2 winner) (do (update-winner! player2-ns)
                            (update-loser! player1-ns))))
 
+;; Used to keep going if all the matches haven't been played.
 (defn inc-match-count-if-below-limit!
   "Returns truthy if the number of matches was incremented, else falsey."
   [match-id limit]
@@ -73,6 +80,7 @@
       (compare-and-set! match-tracker current-match-tracker
                         (assoc current-match-tracker match-id (inc num-matches))))))
 
+;; Kicks off a match using the engine.
 (defn play-match! [match-id limit]
   ;; check to see if we need to play the match by atomically checking the
   ;; number of matches against the limit
@@ -86,6 +94,7 @@
         (record-match-result! player1-ns player2-ns winner)
         (recur match-id limit)))))
 
+;; Triggered any time a new player is added.
 (defn play-all-outstanding-games
   "Play all the matches up to the limit."
   [limit]
@@ -100,6 +109,7 @@
   (println @players-by-name)
   (@players-by-name name))
 
+;; Called when a player is submitted.
 (defn register-player!
   [player player-ns code]
   (let [player-name (engine/get-name player)
@@ -140,6 +150,7 @@
     (async-play-all-outstanding-games 10)
     (str player-ns)))
 
+;; This is used when a new player is added.
 (defn create-player
   "Creates a new player, unless a player of that name already exists."
   [code nm]
@@ -151,6 +162,8 @@
         (http-error (str "Failed: player " nm " already exists")))
       (http-error (str "Failed: couldn't read player code")))))
 
+;; When a player is updated i.e. the name matches and the correct namespace
+;; was provided.
 (defn update-player
   "Attempts to update the player, failing if a player of that name doesn't
 already exist, or the id doesn't match the player's id."

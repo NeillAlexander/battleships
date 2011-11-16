@@ -1,3 +1,5 @@
+;; This provides the low level DSL for the game - all the functions that are required to set up the board,
+;; place ships, fire at ships etc. There is no game logic in here at all.
 (ns battleships.board)
 
 ;; Data structures

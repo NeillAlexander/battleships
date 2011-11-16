@@ -1,3 +1,5 @@
+;; The loader is what is used to compile the player. This makes use of Clojail to evaluate
+;; the code in a way that will ensure no-one can blow up my computer!
 (ns battleships.loader
   (:import [java.io PushbackReader]
            [battleships.engine ShipPosition])
@@ -7,6 +9,7 @@
             [clojail.core :as clojail]
             [clojail.testers :as testers]))
 
+;; Read the code in from the file, and use the reader to build up the Clojure data structure.
 (defn read-ns
   "Returns a vector containing the forms from the file."
   [player-ns-file]
@@ -16,15 +19,12 @@
         (recur (conj forms form))
         forms))))
 
+;; Check whether this form starts with ns. Used to filter out the namespace, since when the code
+;; is loaded, we will create a random namespace for it.
 (defn ns-form? [form]
   (= (first form) 'ns))
 
-(defn replace-ns [player-ns namespace]
-  (vec (map #(if (ns-form? %) `(ns ~(symbol namespace)) %) player-ns)))
-
-(defn add-in-ns [player-ns]
-  (conj player-ns '(in-ns 'battleships.client)))
-
+;; Evals the code using Clojail, returning the symbol that represents the namespace.
 (defn eval-ns
   "Evals the namespace and returns the ns name used."
   ([ns-file]
@@ -38,24 +38,30 @@
           (doall (map sb (filter #(not (ns-form? %)) ns-code)))
           player-ns)))))
 
+;; Once a player has been created, it's possible to update it. To do so, the previous
+;; namespace must be provided.
 (defn update-ns
   "Updates the player namespace, clearing out the original one first."
   [ns-file player-ns]
   (if (find-ns player-ns)
     (println "Ready to remove the namespace")))
 
+;; Ensure that the the place-ship function succeeded. This is a simple validation
+;; that the player is returning sensible data.
 (defn valid-place-ship-result? [f]
   (let [result (f (second (first (game/new-ships))))]
     (and (map? result)
          (:square result)
          (:orientation result))))
 
+;; Ensure that the next-shot function is returning something that looks sensible.
 (defn valid-next-shot-result? [f]
   (let [test-game (game/new-game)
         result (f (engine/new-player-context test-game :player1)
                   (engine/new-player-context test-game :player2))]
     (string? result)))
 
+;; Make sure that the code defines the functions that are required.
 (defn valid-player-ns?
   "Check to make sure the ns defines the 2 required functions."
   [player-ns]
@@ -65,6 +71,7 @@
         valid-next-shot (valid-next-shot-result? next-shot-fn)]
     (and valid-place-ship valid-next-shot)))
 
+;; Reifies the Player protocol, using the functions that are provided by the submitted namespace.
 (defn make-player
   "Reify the player using the functions from the namespace."
   ([player-ns]
@@ -84,6 +91,7 @@
        (you-lost [this player-context opponent-context]
          (println (str name " lost!"))))))
 
+;; Get rid of a player namespace.
 (defn cleanup-ns
   [player-ns]
   (doall (map (partial ns-unmap player-ns) (keys (ns-map player-ns))))

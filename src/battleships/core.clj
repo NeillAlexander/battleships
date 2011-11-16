@@ -1,3 +1,7 @@
+;; Contains the main method. When this is run from the comand line a game is set up with 2 random
+;; players. It's more for testing than anything else. In the dojo the intention would be to run
+;; a server on one machine, and just provide everyone with the source code so that they can
+;; submit players using client.clj.
 (ns battleships.core
   (:require [battleships.engine :as engine]
             [battleships.board :as board]
