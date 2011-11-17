@@ -21,6 +21,19 @@ See demo.clj for more information.
 
 h2. Usage
 
+h3. Clojail Requirement
+
+Because the project uses Clojail, you need to create a file called in your home directory called <code>.java.policy</code> (note the dot at the beginning). This should contain:
+<pre>
+<code>
+grant {
+	permission java.security.AllPermission;
+};
+</code>
+</pre>
+
+This basically allows Clojail to set up a sandbox for evaluating the code.
+
 h3. Starting the Server
 
 <code>lein ring server</code>

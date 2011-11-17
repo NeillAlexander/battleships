@@ -1,13 +1,4 @@
 Mandatory:
-	- Write up a README for use at a dojo
-	- Add a note about the requirement to install the ~/.java.policy file
-		'''
-		grant {
-  		permission java.security.AllPermission;
-		};
-		'''
-	- Email Bruce about the idea
-		Emphasize that there is no pressure! It was just something that I thought might be fun.
 		
 Optional:
 	- provide a way to have a tournament
