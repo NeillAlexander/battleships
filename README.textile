@@ -1,0 +1,71 @@
+h1. battleships
+
+This project consists of 2 parts:
+
+# A server, using Ring and Compojure, which hosts games of battleships.
+# A client, which is used to submit players to the server.
+
+I had an idea that we could use something like this in the regular Clojure programming dojo I attend. I wanted something that would enable people to get started coding quickly, 
+and that would provide feedback, and hence motivation, to continue writing code. Quite often I find at the dojo, there is only enough time to get something started and write
+a little bit of code. I thought this might help by providing a starting point.
+
+The idea is that teams will take the demo.clj code and modify that to play a game of battleships. To do so there are 2 functions that need to be implemented:
+
+<pre>
+<code>
+(defn place-ship [ship])
+
+(defn next-shot [context opponent-context])
+</code>
+</pre>  
+
+See demo.clj for more information.
+
+h2. Usage
+
+h3. Starting the Server
+
+<code>lein ring server</code>
+
+h3. Testing a Player
+
+Write your player and then, from the battleships.client namespace do:
+
+<code>
+=> (test-player "src/battleships/demo.clj")
+cpu E1 = :patrol-boat, ships sunk = [:aircraft-carrier :submarine :destroyer :battleship :patrol-boat]
+cpu won in 98 shots!
+Test Player lost!
+</code>
+
+h3. Submitting a Player
+
+Once you are happy with your player, submit as follows:
+
+<code>
+=> (submit-player "src/battleships/demo.clj" "My Awesome Player" "http://localhost:3000/create")
+Submitting to http://localhost:3000/create
+{:status 200, :headers {"date" "Thu, 17 Nov 2011 20:26:45 GMT", "content-type" "text/html; charset=utf-8", "connection" "close", "server" "Jetty(6.1.25)"}, :body "player780"}
+</code>
+
+The body contains the namespace that was created for the player on the server. Now, if you browse to the server, you will see your player listed, and the score from having
+played against the computer.
+
+h3. Updating a Player
+
+If you want to update a player, do this - note that you need the namespace that was returned when you created the first player:
+
+<code>
+=> (update-player "src/battleships/demo.clj" "My Awesome Player" "player809" "http://localhost:3000/update")
+Submitting to http://localhost:3000/update
+{:status 200, :headers {"date" "Thu, 17 Nov 2011 20:29:42 GMT", "content-type" "text/html; charset=utf-8", "connection" "close", "server" "Jetty(6.1.25)"}, :body "player809"}
+</code>
+
+There is probably no point in updating a player, since none of the matches will be replayed. From the point of view of a competition, creating a new player each time
+is probably a better strategy.
+
+h2. License
+
+Copyright (C) 2011 Neill Alexander
+
+Distributed under the Eclipse Public License, the same as Clojure.

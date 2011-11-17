@@ -147,7 +147,7 @@
   [player-ns nm code]
   (let [player (loader/make-player player-ns nm)]
     (register-player! player player-ns code)
-    (async-play-all-outstanding-games 10)
+    (async-play-all-outstanding-games 25)
     (str player-ns)))
 
 ;; This is used when a new player is added.
