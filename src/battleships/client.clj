@@ -23,13 +23,14 @@
       (loader/cleanup-ns player-ns))))
 
 (defn- post-to-server
-  [player-ns-file name id server-address]
-  (if (loader/valid-player-ns? (loader/eval-ns player-ns-file))
-    (do
-      (println (str "Submitting to " server-address))
-      (http/post server-address {:body (slurp player-ns-file)
-                                 :content-type "text/plain"
-                                 :query-params {:name name :id id}}))))
+  [player-ns-file name id server path]
+  (let [server-address (str server path)] 
+    (if (loader/valid-player-ns? (loader/eval-ns player-ns-file))
+      (do
+        (println (str "Submitting to " server-address))
+        (http/post server-address {:body (slurp player-ns-file)
+                                   :content-type "text/plain"
+                                   :query-params {:name name :id id}})))))
 
 ;; Once you are happy with the player, use this to submit to the server.
 ;;
@@ -37,7 +38,7 @@
 ;; <pre>
 ;; => (submit-player "src/battleships/demo.clj" 
 ;;      "My Player" 
-;;      "http://localhost:3000/create")
+;;      "http://localhost:3000")
 ;; Submitting to http://localhost:3000/create
 ;; {:status 200, :headers {"date" "Wed, 16 Nov 2011 19:51:17 GMT", "content-type" "text/html; charset=utf-8", "connection" "close", "server" "Jetty(6.1.25)"}, :body "player1023"}
 ;; </pre>
@@ -46,9 +47,9 @@
 (defn submit-player
   "Submit your player to the server."
   ([player-ns-file name]
-     (submit-player player-ns-file name "http://localhost:3000/create"))
+     (submit-player player-ns-file name "http://localhost:3000"))
   ([player-ns-file name server-address]
-     (post-to-server player-ns-file name nil server-address)))
+     (post-to-server player-ns-file name nil server-address "/create")))
 
 ;; If you do want to update a player, use this.
 ;; <pre>
@@ -56,13 +57,13 @@
 ;; => (update-player "src/battleships/demo.clj" 
 ;;      "My Player" 
 ;;      "player1023" 
-;;      "http://localhost:3000/update")
+;;      "http://localhost:3000")
 ;; Submitting to http://localhost:3000/update
 ;; {:status 200, :headers {"date" "Wed, 16 Nov 2011 19:54:27 GMT", "content-type" "text/html; charset=utf-8", "connection" "close", "server" "Jetty(6.1.25)"}, :body "player1023"}
 ;; </pre>
 (defn update-player
   "Use this when you want to overwrite your current player. You need the id returned from the original submission."
   ([player-ns-file name id]
-     (update-player player-ns-file name id "http://localhost:3000/update"))
+     (update-player player-ns-file name id "http://localhost:3000"))
   ([player-ns-file name id server-address]
-     (post-to-server player-ns-file name id server-address)))
+     (post-to-server player-ns-file name id server-address "/update")))

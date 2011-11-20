@@ -27,7 +27,7 @@ Because the project uses Clojail, you need to create a file called in your home 
 <pre>
 <code>
 grant {
-	permission java.security.AllPermission;
+    permission java.security.AllPermission;
 };
 </code>
 </pre>
@@ -57,7 +57,7 @@ Once you are happy with your player, submit as follows:
 
 <pre>
 <code>
-=> (submit-player "src/battleships/demo.clj" "My Awesome Player" "http://localhost:3000/create")
+=> (submit-player "src/battleships/demo.clj" "My Awesome Player" "http://localhost:3000")
 Submitting to http://localhost:3000/create
 {:status 200, :headers {"date" "Thu, 17 Nov 2011 20:26:45 GMT", "content-type" "text/html; charset=utf-8", "connection" "close", "server" "Jetty(6.1.25)"}, :body "player780"}
 </code>
@@ -71,7 +71,7 @@ If you want to update a player, do this - note that you need the namespace that 
 
 <pre>
 <code>
-=> (update-player "src/battleships/demo.clj" "My Awesome Player" "player809" "http://localhost:3000/update")
+=> (update-player "src/battleships/demo.clj" "My Awesome Player" "player809" "http://localhost:3000")
 Submitting to http://localhost:3000/update
 {:status 200, :headers {"date" "Thu, 17 Nov 2011 20:29:42 GMT", "content-type" "text/html; charset=utf-8", "connection" "close", "server" "Jetty(6.1.25)"}, :body "player809"}
 </code>

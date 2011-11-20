@@ -1,6 +1,7 @@
 Mandatory:
 	- does the logic handle overlapping ships? @done
-	- change the create / submit functions so don't need to supply the full url, just the server location'
+	- change the create / submit functions so don't need to supply the full url, just the server location' @done
+	- Add a function to create the policy file
 	- Make the game engine more parallel. Should be able to trigger multiple threads to play more games.
 	- Once parallel, up the number of games to 1000.
 		
