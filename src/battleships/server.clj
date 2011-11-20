@@ -177,15 +177,19 @@ already exist, or the id doesn't match the player's id."
       (http-error (str "Failed: id " id " does not match existing player's id")))
     (http-error (str "Failed: no player " nm " found to update."))))
 
-(defn view-player [name]
-  (if (player-exists? name)
-    (view/make-player-view (@players-by-name name))
-    (str name " not found")))
+(defn- local-request? [request]
+  (= "127.0.0.1" (:remote-addr request)))
+
+(defn view-player [name request]
+  (if (local-request? request) 
+    (if (player-exists? name)
+      (view/make-player-view (@players-by-name name))
+      (str name " not found"))))
 
 ;; These are the various pages the server provides.
 (defroutes main-routes
-  (GET "/" [] (view/main-page @players))
-  (GET "/view" {:keys [params]} (view-player (:name params)))
+  (GET "/" request (view/main-page @players (local-request? request)))
+  (GET "/view" {:keys [params] :as request} (view-player (:name params) request))
   (POST "/create" {:keys [body params] :as request} (create-player body
                                                             (:name params)))
   (POST "/update" {:keys [body params] :as request} (update-player body

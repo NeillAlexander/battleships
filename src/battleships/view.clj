@@ -1,11 +1,11 @@
 (ns battleships.view
   (:use [hiccup.core]))
 
-(defn make-player-table [players]
+(defn make-player-table [players local?]
   (html [:table
          [:tr [:th "Name"] [:th "Played"] [:th "Won"] [:th "Lost"]]
          (for [{:keys [name played won lost]} (sort (fn [x y] (> (:won x) (:won y))) (vals players))]
-           [:tr [:td [:a {:href (str "/view?name="name)} name]] [:td {:align "center"} played]
+           [:tr [:td (if local? [:a {:href (str "/view?name="name)} name] name)] [:td {:align "center"} played]
             [:td {:align "center"} won] [:td {:align "center"} lost]])]))
 
 (defn make-player-view [registered-player]
@@ -14,11 +14,11 @@
         [:div "Updated: " (:updated registered-player)]
         [:pre (:code registered-player)]))
 
-(defn main-page [players]
+(defn main-page [players local?]
   (html
     [:head [:meta {:HTTP-EQUIV "Refresh" :CONTENT "1"}]]
     [:body 
      [:h1 "Battleships"]
-     (make-player-table players)]))
+     (make-player-table players local?)]))
 
 
