@@ -67,3 +67,24 @@
      (update-player player-ns-file name id "http://localhost:3000"))
   ([player-ns-file name id server-address]
      (post-to-server player-ns-file name id server-address "/update")))
+
+(defn file-exists? [file]
+  (.. (java.io.File. file) exists))
+
+(defn spit-java-policy-file! 
+  "Creates the policy file that we need to use Clojail sandbox."
+  [java-policy-file]
+  (spit java-policy-file 
+"grant {
+    permission java.security.AllPermission;
+};"))
+
+(defn create-java-policy-file!
+  "Helper function which creates the policy file in the user home directory"
+  []
+  (let [java-policy-file (str (System/getProperty "user.home") "/.java.policy")]
+    (when-not (file-exists? java-policy-file)
+      (println "Creating " java-policy-file "...")
+      (spit-java-policy-file! java-policy-file))
+    (if-not (file-exists? java-policy-file)
+      (throw (IllegalStateException. (str java-policy-file " not created!"))))))

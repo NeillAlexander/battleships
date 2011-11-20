@@ -32,7 +32,11 @@ grant {
 </code>
 </pre>
 
-This basically allows Clojail to set up a sandbox for evaluating the code.
+This basically allows Clojail to set up a sandbox for evaluating the code. There is a helper function available in the battleships.client namespace which will create this file for you:
+
+<pre><code>(create-java-policy-file!)</code></pre>
+
+This isn't done automatically because, hey, it's your computer, and it's not up to me to create files willy nilly on your computer!
 
 h3. Starting the Server
 
