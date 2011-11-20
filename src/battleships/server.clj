@@ -12,6 +12,10 @@
             [ring.util.response :as resp]
             [clojure.string :as string]))
 
+;; constant
+;; note this means each will play each other 500 times as player1, and 500 times as player2
+(def num-matches 500) 
+
 ;; Server state
 (def players (ref {}))
 (def players-by-name (ref {}))
@@ -40,7 +44,7 @@
      (create-match-up! player1 player2 true))
   ([player1 player2 match1?]
      (let [match-id (str (:namespace player1) "-" (:namespace player2))]
-       (swap! match-tracker assoc match-id 0)
+       (swap! match-tracker assoc match-id (atom 0))
        (if match1? (recur player2 player1 false)))))
 
 ;; Set of functions to update the server state after matches have been played.
@@ -50,35 +54,36 @@
       (create-match-up! player new-player))))
 
 (defn update-winner! [winner-ns]
-  (println (str "Winner is " winner-ns))
   (dosync
    (alter players update-in [winner-ns :won] inc)
    (alter players update-in [winner-ns :played] inc)))
 
 (defn update-loser! [loser-ns]
-  (println (str "Loser is " loser-ns))
   (dosync
    (alter players update-in [loser-ns :lost] inc)
    (alter players update-in [loser-ns :played] inc)))
 
 (defn record-match-result!
   [player1-ns player2-ns winner]
-  (println (str "winner key is " winner))
   (cond
    (= :player1 winner) (do (update-winner! player1-ns)
                            (update-loser! player2-ns))
    (= :player2 winner) (do (update-winner! player2-ns)
                            (update-loser! player1-ns))))
 
+(defn- inc-if-below [limit current-value]
+  (if (<= current-value limit)
+    (inc current-value)
+    current-value))
+
 ;; Used to keep going if all the matches haven't been played.
 (defn inc-match-count-if-below-limit!
   "Returns truthy if the number of matches was incremented, else falsey."
   [match-id limit]
-  (let [current-match-tracker @match-tracker
-        num-matches (current-match-tracker match-id)]
-    (if (< num-matches limit)
-      (compare-and-set! match-tracker current-match-tracker
-                        (assoc current-match-tracker match-id (inc num-matches))))))
+  (let [new-total (swap! (@match-tracker match-id) (partial inc-if-below limit))]
+    (if (<= new-total limit)
+      new-total
+      nil)))
 
 ;; Kicks off a match using the engine.
 (defn play-match! [match-id limit]
@@ -89,7 +94,6 @@
           player-map @players
           player1 (player-map player1-ns)
           player2 (player-map player2-ns)]
-      (println "----------------------------------------------")
       (let [{:keys [winner loser] :as game} (engine/play (:impl player1) (:impl player2))]
         (record-match-result! player1-ns player2-ns winner)
         (recur match-id limit)))))
@@ -103,10 +107,9 @@
 
 (defn async-play-all-outstanding-games
   [limit]
-  (.start (Thread. (partial play-all-outstanding-games limit))))
+  (.. (Thread. (partial play-all-outstanding-games limit)) start))
 
 (defn player-exists? [name]
-  (println @players-by-name)
   (@players-by-name name))
 
 ;; Called when a player is submitted.
@@ -117,7 +120,6 @@
         registered-player (if already-registered 
                             (assoc (@players (str player-ns)) :updated (java.util.Date.))
                             (make-registered-player player player-ns code))]
-    (println registered-player)
     (dosync
       (alter players assoc (str player-ns) registered-player)
       (alter players-by-name assoc (:name registered-player) registered-player))
@@ -129,9 +131,7 @@
 
 (defn existing-player-id-matches? [name id]
   (if-let [existing-player (player-exists? name)]
-    (do
-      (println (str (:namespace existing-player) " matches " ))
-      (= (symbol id) (:namespace existing-player)))))
+    (= (symbol id) (:namespace existing-player))))
 
 (defn http-response 
   ([body]
@@ -147,7 +147,7 @@
   [player-ns nm code]
   (let [player (loader/make-player player-ns nm)]
     (register-player! player player-ns code)
-    (async-play-all-outstanding-games 25)
+    (async-play-all-outstanding-games num-matches)
     (str player-ns)))
 
 ;; This is used when a new player is added.

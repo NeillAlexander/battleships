@@ -15,7 +15,10 @@
         [:pre (:code registered-player)]))
 
 (defn main-page [players]
-  (html [:h1 "Battleships"]
-        (make-player-table players)))
+  (html
+    [:head [:meta {:HTTP-EQUIV "Refresh" :CONTENT "1"}]]
+    [:body 
+     [:h1 "Battleships"]
+     (make-player-table players)]))
 
 

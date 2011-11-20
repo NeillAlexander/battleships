@@ -21,11 +21,8 @@
        (next-shot [this {:keys [last-shot last-result hits misses ships-sunk] :as context}
                    opponent-context]
          (demo/next-shot context opponent-context))         
-       (you-won [this {:keys [last-shot last-result hits misses ships-sunk]} opponent-context]
-         (println (str name " " last-shot " = " last-result ", ships sunk = " ships-sunk))
-         (println (str name " won in " (+ (count hits) (count misses)) " shots!")))
-       (you-lost [this player-context opponent-context]
-         (println (str name " lost!"))))))
+       (you-won [this {:keys [last-shot last-result hits misses ships-sunk]} opponent-context])
+       (you-lost [this player-context opponent-context]))))
 
 
 (defn test-player [player]

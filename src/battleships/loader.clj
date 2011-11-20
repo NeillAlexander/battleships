@@ -38,14 +38,6 @@
           (doall (map sb (filter #(not (ns-form? %)) ns-code)))
           player-ns)))))
 
-;; Once a player has been created, it's possible to update it. To do so, the previous
-;; namespace must be provided.
-(defn update-ns
-  "Updates the player namespace, clearing out the original one first."
-  [ns-file player-ns]
-  (if (find-ns player-ns)
-    (println "Ready to remove the namespace")))
-
 ;; Ensure that the the place-ship function succeeded. This is a simple validation
 ;; that the player is returning sensible data.
 (defn valid-place-ship-result? [f]
@@ -85,11 +77,8 @@
            (ShipPosition. (:square pos) (:orientation pos))))
        (next-shot [this player-context opponent-context]
          ((ns-resolve player-ns 'next-shot) player-context opponent-context))         
-       (you-won [this {:keys [last-shot last-result hits misses ships-sunk]} opponent-context]
-         (println (str name " " last-shot " = " last-result ", ships sunk = " ships-sunk))
-         (println (str name " won in " (+ (count hits) (count misses)) " shots!")))
-       (you-lost [this player-context opponent-context]
-         (println (str name " lost!"))))))
+       (you-won [this {:keys [last-shot last-result hits misses ships-sunk]} opponent-context])
+       (you-lost [this player-context opponent-context]))))
 
 ;; Get rid of a player namespace.
 (defn cleanup-ns
