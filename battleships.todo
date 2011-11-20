@@ -1,4 +1,8 @@
 Mandatory:
+	- does the logic handle overlapping ships? @done
+	- change the create / submit functions so don't need to supply the full url, just the server location'
+	- Make the game engine more parallel. Should be able to trigger multiple threads to play more games.
+	- Once parallel, up the number of games to 1000.
 		
 Optional:
 	- provide a way to have a tournament

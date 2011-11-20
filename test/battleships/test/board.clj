@@ -67,7 +67,12 @@
     (is (sq-empty? board "d1"))
     (is (sq-empty? board "a2"))
     (is (sq-empty? board "b2"))
-    (is (sq-empty? board "c2"))))
+    (is (sq-empty? board "c2"))
+    ;; make sure can't place a ship on top of it
+    (is (nil? (place-ship ship board "a1" :h)))
+    (is (nil? (place-ship ship board "b1" :h)))
+    (is (nil? (place-ship ship board "c1" :h)))
+    (is (nil? (place-ship ship board "a1" :v)))))
 
 (deftest test-fire-shell
   (let [ship (make-ship "test" :battleship 3)
