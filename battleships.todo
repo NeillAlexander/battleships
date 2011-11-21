@@ -1,6 +1,4 @@
 Mandatory:
-	- If player hits, then get another go
-	- Decide on whether to provide information about sunk ships. I think it would be more challenging to not provide that information, then need strategies to determine that a ship has been sunk.
 		
 Optional:
 	- provide a way to have a tournament

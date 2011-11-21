@@ -19,6 +19,13 @@ The idea is that teams will take the demo.clj code and modify that to play a gam
 
 See demo.clj for more information.
 
+h2. Game Rules
+
+There are different variations of the game. The rules for this variation are:
+
+# A player keeps firing shells until it misses.
+# The player is notified that it has sunk a ship. 
+
 h2. Usage
 
 h3. Clojail Requirement
