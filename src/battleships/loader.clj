@@ -49,8 +49,8 @@
 ;; Ensure that the next-shot function is returning something that looks sensible.
 (defn valid-next-shot-result? [f]
   (let [test-game (game/new-game)
-        result (f (engine/new-player-context test-game :player1)
-                  (engine/new-player-context test-game :player2))]
+        result (f (get-in (engine/new-player-context test-game :player1) [:player1 :context])
+                  (get-in (engine/new-player-context test-game :player2) [:player2 :context]))]
     (string? result)))
 
 ;; Make sure that the code defines the functions that are required.
