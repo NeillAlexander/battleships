@@ -200,8 +200,8 @@
                 ;; if it sunk something, have I won?
                 (if (game/all-ships-sunk? opponent-data)
                   (finished (assoc updated-game :winner player-key :loser opponent-key) player1 player2)
-                  (recur updated-game (drop 2 turns)))
-                (recur updated-game (drop 2 turns))))
+                  (recur updated-game turns))
+                (recur updated-game turns)))
             ;; missed - continue with next player
             (recur updated-game (drop 2 turns)))
           ;; firing failed - opponent wins
