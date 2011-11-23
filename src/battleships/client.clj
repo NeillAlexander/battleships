@@ -16,11 +16,11 @@
   "player-ns is the path to the file that contains the namespace definition. This is for use when developing the player locally and want to make sure that it can play a game."
   [player-ns-file]
   (if-let [player-ns (loader/eval-ns player-ns-file)]
-    (do
-      (if (loader/valid-player-ns? player-ns)
-        (core/test-player (loader/make-player player-ns))
-        (println "invalid player"))
-      (loader/cleanup-ns player-ns))))
+    (if (loader/valid-player-ns? player-ns)
+        (let [game (core/test-player (loader/make-player player-ns))]
+          (loader/cleanup-ns player-ns)
+          game)
+        (loader/cleanup-ns player-ns))))
 
 (defn- post-to-server
   [player-ns-file name id server path]

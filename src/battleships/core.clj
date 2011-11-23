@@ -18,10 +18,10 @@
        (ship-position [this ship]
          (let [pos (demo/place-ship ship)]
            (ShipPosition. (:square pos) (:orientation pos))))
-       (next-shot [this {:keys [last-shot last-result hits misses ships-sunk] :as context}
+       (next-shot [this {:keys [last-result hits ships-sunk] :as context}
                    opponent-context]
          (demo/next-shot context opponent-context))         
-       (you-won [this {:keys [last-shot last-result hits misses ships-sunk]} opponent-context])
+       (you-won [this {:keys [last-result hits ships-sunk]} opponent-context])
        (you-lost [this player-context opponent-context]))))
 
 

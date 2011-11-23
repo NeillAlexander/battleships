@@ -77,9 +77,9 @@
            (ShipPosition. (:square pos) (:orientation pos))))
        (next-shot [this player-context opponent-context]
          ((ns-resolve player-ns 'next-shot) player-context opponent-context))         
-       (you-won [this {:keys [last-shot last-result hits misses ships-sunk]} opponent-context]
+       (you-won [this {:keys [last-result hits ships-sunk shots]} opponent-context]
          (comment (println name " won in " (+ (count misses) (count hits)) " shots!")))
-       (you-lost [this {:keys [last-shot last-result hits misses ships-sunk]} opponent-context]
+       (you-lost [this {:keys [last-result hits ships-sunk shots]} opponent-context]
          (comment (println name " lost in " (+ (count misses) (count hits)) " shots!"))))))
 
 ;; Get rid of a player namespace.

@@ -2537,7 +2537,7 @@ that would enable groups to get coding quickly, and have something satisfying by
 
 <p>The idea is that teams will start with demo.clj, and modify it. The aim is to implement 2 functions which will play a game of battleships. The 2 functions are for placing the ships at the
 beginning of the game, and then firing shots at the opponents ships. The winner is the player who sinks all of the opponent's ships first.</p>
-</div><div class="dependencies"><h3>dependencies</h3><table><tr><td class="dep-name">org.clojure/clojure</td><td class="dotted"><hr /></td><td class="dep-version">1.3.0</td></tr><tr><td class="dep-name">ring/ring-core</td><td class="dotted"><hr /></td><td class="dep-version">1.0.0-beta2</td></tr><tr><td class="dep-name">ring/ring-jetty-adapter</td><td class="dotted"><hr /></td><td class="dep-version">1.0.0-beta2</td></tr><tr><td class="dep-name">compojure</td><td class="dotted"><hr /></td><td class="dep-version">0.6.5</td></tr><tr><td class="dep-name">clj-http</td><td class="dotted"><hr /></td><td class="dep-version">0.2.3</td></tr><tr><td class="dep-name">hiccup</td><td class="dotted"><hr /></td><td class="dep-version">0.3.7</td></tr><tr><td class="dep-name">clojail</td><td class="dotted"><hr /></td><td class="dep-version">0.5.0</td></tr></table></div><div class="dependencies"><h3>dev dependencies</h3><table><tr><td class="dep-name">lein-ring</td><td class="dotted"><hr /></td><td class="dep-version">0.4.5</td></tr></table></div></td><td class="codes" style="text-align: center; vertical-align: middle;color: #666;padding-right:20px"><br /><br /><br />(this space intentionally left almost blank)</td></tr><tr><td class="docs"><div class="toc"><a name="toc"><h3>namespaces</h3></a><ul><li><a href="#battleships.board">battleships.board</a></li><li><a href="#battleships.game">battleships.game</a></li><li><a href="#battleships.engine">battleships.engine</a></li><li><a href="#battleships.core">battleships.core</a></li><li><a href="#battleships.loader">battleships.loader</a></li><li><a href="#battleships.server">battleships.server</a></li><li><a href="#battleships.view">battleships.view</a></li><li><a href="#battleships.demo">battleships.demo</a></li><li><a href="#battleships.monkey">battleships.monkey</a></li><li><a href="#battleships.client">battleships.client</a></li></ul></div></td><td class="codes">&nbsp;</td></tr><tr><td class="docs"><div class="docs-header"><a class="anchor" href="#battleships.board" name="battleships.board"><h1 class="project-name">battleships.board</h1><a class="toc-link" href="#toc">toc</a></a></div></td><td class="codes" /></tr><tr><td class="docs"><p>This provides the low level DSL for the game - all the functions that are required to set up the board,
+</div><div class="dependencies"><h3>dependencies</h3><table><tr><td class="dep-name">org.clojure/clojure</td><td class="dotted"><hr /></td><td class="dep-version">1.3.0</td></tr><tr><td class="dep-name">ring/ring-core</td><td class="dotted"><hr /></td><td class="dep-version">1.0.0-beta2</td></tr><tr><td class="dep-name">ring/ring-jetty-adapter</td><td class="dotted"><hr /></td><td class="dep-version">1.0.0-beta2</td></tr><tr><td class="dep-name">compojure</td><td class="dotted"><hr /></td><td class="dep-version">0.6.5</td></tr><tr><td class="dep-name">clj-http</td><td class="dotted"><hr /></td><td class="dep-version">0.2.3</td></tr><tr><td class="dep-name">hiccup</td><td class="dotted"><hr /></td><td class="dep-version">0.3.7</td></tr><tr><td class="dep-name">clojail</td><td class="dotted"><hr /></td><td class="dep-version">0.5.0</td></tr></table></div><div class="dependencies"><h3>dev dependencies</h3><table><tr><td class="dep-name">lein-ring</td><td class="dotted"><hr /></td><td class="dep-version">0.4.5</td></tr></table></div></td><td class="codes" style="text-align: center; vertical-align: middle;color: #666;padding-right:20px"><br /><br /><br />(this space intentionally left almost blank)</td></tr><tr><td class="docs"><div class="toc"><a name="toc"><h3>namespaces</h3></a><ul><li><a href="#battleships.board">battleships.board</a></li><li><a href="#battleships.game">battleships.game</a></li><li><a href="#battleships.engine">battleships.engine</a></li><li><a href="#battleships.core">battleships.core</a></li><li><a href="#battleships.loader">battleships.loader</a></li><li><a href="#battleships.server">battleships.server</a></li><li><a href="#battleships.view">battleships.view</a></li><li><a href="#battleships.demo">battleships.demo</a></li><li><a href="#battleships.monkey">battleships.monkey</a></li><li><a href="#battleships.client">battleships.client</a></li><li><a href="#battleships.replay">battleships.replay</a></li></ul></div></td><td class="codes">&nbsp;</td></tr><tr><td class="docs"><div class="docs-header"><a class="anchor" href="#battleships.board" name="battleships.board"><h1 class="project-name">battleships.board</h1><a class="toc-link" href="#toc">toc</a></a></div></td><td class="codes" /></tr><tr><td class="docs"><p>This provides the low level DSL for the game - all the functions that are required to set up the board,
 place ships, fire at ships etc. There is no game logic in here at all.</p>
 </td><td class="codes" /><pre class="brush: clojure">(ns battleships.board)</pre></tr><tr><td class="docs"><p>Create a new board of width w and height h.</p>
 
@@ -2742,7 +2742,8 @@ core to the game, I'm not going to bother defining the keys dynamically.</p>
        (if-not (and (&gt; num-attempts# ~(:limited-to limit-map)) ~(:when limit-map))
          (if-let [result# (try 
                             ~attempt-clause
-                            (catch Exception e# (println &quot;Caught Exception: &quot; (.getMessage e#))))]
+                            (catch Exception e# (println &quot;Caught Exception: &quot; (.getMessage e#))
+                              (.printStackTrace e#)))]
            result#
            (recur (inc num-attempts#)))
          ~(first else-clause)))))</pre></tr><tr><td class="docs"><p>Places the ship on the board, repeating until a valid position is provided or (for a bot) the number of attempts exceeds 100</p>
@@ -2779,8 +2780,10 @@ core to the game, I'm not going to bother defining the keys dynamically.</p>
     (you-lost loser loser-context winner-context)))</pre></tr><tr><td class="docs">
 </td><td class="codes" /><pre class="brush: clojure">(defn new-player-context [game player-key]
   (assoc-in game [player-key :context]
-            {:last-shot nil, :last-result nil, :hits [],
-             :misses [], :ships-sunk []}))</pre></tr><tr><td class="docs">
+            {:shots []
+             :last-result nil, 
+             :hits [],
+             :ships-sunk []}))</pre></tr><tr><td class="docs">
 </td><td class="codes" /><pre class="brush: clojure">(defn calc-result [result sunk]
   (cond
    (and result sunk) sunk
@@ -2795,14 +2798,14 @@ core to the game, I'm not going to bother defining the keys dynamically.</p>
 </td><td class="codes" /><pre class="brush: clojure">(defn update-player-context
   [game player-key coord result sunk]
   (let [context (get-in game [player-key :context])
-        hits (conj-data-in-context context :hits coord result)
-        misses (conj-data-in-context context :misses coord (not result))
+        shots (conj-data-in-context context :shots coord true)
+        hits (conj-data-in-context context :hits coord result)        
         ships-sunk (conj-data-in-context  context :ships-sunk sunk sunk)]
-    (-&gt; (assoc-in game [player-key :context :last-shot] coord)
-        (assoc-in [player-key :context :last-result] (calc-result result sunk))
-        (assoc-in [player-key :context :hits] hits)
-        (assoc-in [player-key :context :misses] misses)
-        (assoc-in [player-key :context :ships-sunk] ships-sunk))))</pre></tr><tr><td class="docs">
+    (-&gt; game 
+      (assoc-in [player-key :context :last-result] (calc-result result sunk))
+      (assoc-in [player-key :context :hits] hits)
+      (assoc-in [player-key :context :shots] shots)
+      (assoc-in [player-key :context :ships-sunk] ships-sunk))))</pre></tr><tr><td class="docs">
 </td><td class="codes" /><pre class="brush: clojure">(defn init-game [player1 player2]
   (-&gt; (game/new-game (get-name player1) (get-name player2))
       (new-player-context :player1)
@@ -2875,8 +2878,8 @@ core to the game, I'm not going to bother defining the keys dynamically.</p>
                 ;; if it sunk something, have I won?
                 (if (game/all-ships-sunk? opponent-data)
                   (finished (assoc updated-game :winner player-key :loser opponent-key) player1 player2)
-                  (recur updated-game (drop 2 turns)))
-                (recur updated-game (drop 2 turns))))
+                  (recur updated-game turns))
+                (recur updated-game turns)))
             ;; missed - continue with next player
             (recur updated-game (drop 2 turns)))
           ;; firing failed - opponent wins
@@ -2912,14 +2915,11 @@ submit players using client.clj.</p>
        (ship-position [this ship]
          (let [pos (demo/place-ship ship)]
            (ShipPosition. (:square pos) (:orientation pos))))
-       (next-shot [this {:keys [last-shot last-result hits misses ships-sunk] :as context}
+       (next-shot [this {:keys [last-result hits ships-sunk] :as context}
                    opponent-context]
          (demo/next-shot context opponent-context))         
-       (you-won [this {:keys [last-shot last-result hits misses ships-sunk]} opponent-context]
-         (println (str name &quot; &quot; last-shot &quot; = &quot; last-result &quot;, ships sunk = &quot; ships-sunk))
-         (println (str name &quot; won in &quot; (+ (count hits) (count misses)) &quot; shots!&quot;)))
-       (you-lost [this player-context opponent-context]
-         (println (str name &quot; lost!&quot;))))))</pre></tr><tr><td class="docs">
+       (you-won [this {:keys [last-result hits ships-sunk]} opponent-context])
+       (you-lost [this player-context opponent-context]))))</pre></tr><tr><td class="docs">
 </td><td class="codes" /><pre class="brush: clojure">(defn test-player [player]
   (engine/play player (make-random-cpu-player &quot;cpu&quot;)))</pre></tr><tr><td class="docs"><p>Sets up the game</p>
 </td><td class="codes" /><pre class="brush: clojure">(defn -main
@@ -2957,13 +2957,7 @@ is loaded, we will create a random namespace for it.</p>
       (let [ns-code (if (vector? ns-file) ns-file (read-ns ns-file))] 
         (binding [*ns* *ns*]
           (doall (map sb (filter #(not (ns-form? %)) ns-code)))
-          player-ns)))))</pre></tr><tr><td class="docs"><p>Once a player has been created, it's possible to update it. To do so, the previous
-namespace must be provided.</p>
-</td><td class="codes" /><pre class="brush: clojure">(defn update-ns
-  &quot;Updates the player namespace, clearing out the original one first.&quot;
-  [ns-file player-ns]
-  (if (find-ns player-ns)
-    (println &quot;Ready to remove the namespace&quot;)))</pre></tr><tr><td class="docs"><p>Ensure that the the place-ship function succeeded. This is a simple validation
+          player-ns)))))</pre></tr><tr><td class="docs"><p>Ensure that the the place-ship function succeeded. This is a simple validation
 that the player is returning sensible data.</p>
 </td><td class="codes" /><pre class="brush: clojure">(defn valid-place-ship-result? [f]
   (let [result (f (second (first (game/new-ships))))]
@@ -2972,8 +2966,8 @@ that the player is returning sensible data.</p>
          (:orientation result))))</pre></tr><tr><td class="docs"><p>Ensure that the next-shot function is returning something that looks sensible.</p>
 </td><td class="codes" /><pre class="brush: clojure">(defn valid-next-shot-result? [f]
   (let [test-game (game/new-game)
-        result (f (engine/new-player-context test-game :player1)
-                  (engine/new-player-context test-game :player2))]
+        result (f (get-in (engine/new-player-context test-game :player1) [:player1 :context])
+                  (get-in (engine/new-player-context test-game :player2) [:player2 :context]))]
     (string? result)))</pre></tr><tr><td class="docs"><p>Make sure that the code defines the functions that are required.</p>
 </td><td class="codes" /><pre class="brush: clojure">(defn valid-player-ns?
   &quot;Check to make sure the ns defines the 2 required functions.&quot;
@@ -2996,11 +2990,10 @@ that the player is returning sensible data.</p>
            (ShipPosition. (:square pos) (:orientation pos))))
        (next-shot [this player-context opponent-context]
          ((ns-resolve player-ns 'next-shot) player-context opponent-context))         
-       (you-won [this {:keys [last-shot last-result hits misses ships-sunk]} opponent-context]
-         (println (str name &quot; &quot; last-shot &quot; = &quot; last-result &quot;, ships sunk = &quot; ships-sunk))
-         (println (str name &quot; won in &quot; (+ (count hits) (count misses)) &quot; shots!&quot;)))
-       (you-lost [this player-context opponent-context]
-         (println (str name &quot; lost!&quot;))))))</pre></tr><tr><td class="docs"><p>Get rid of a player namespace.</p>
+       (you-won [this {:keys [last-result hits ships-sunk shots]} opponent-context]
+         (comment (println name &quot; won in &quot; (+ (count misses) (count hits)) &quot; shots!&quot;)))
+       (you-lost [this {:keys [last-result hits ships-sunk shots]} opponent-context]
+         (comment (println name &quot; lost in &quot; (+ (count misses) (count hits)) &quot; shots!&quot;))))))</pre></tr><tr><td class="docs"><p>Get rid of a player namespace.</p>
 </td><td class="codes" /><pre class="brush: clojure">(defn cleanup-ns
   [player-ns]
   (doall (map (partial ns-unmap player-ns) (keys (ns-map player-ns))))
@@ -3017,7 +3010,9 @@ games between all the submitted players, and displaying the results in a simple 
             [compojure.route :as route]
             [compojure.handler :as handler]
             [ring.util.response :as resp]
-            [clojure.string :as string]))</pre></tr><tr><td class="docs"><p>Server state</p>
+            [clojure.string :as string]))</pre></tr><tr><td class="docs"><p>constant
+note this means each will play each other 500 times as player1, and 500 times as player2</p>
+</td><td class="codes" /><pre class="brush: clojure">(def num-matches 500) </pre></tr><tr><td class="docs"><p>Server state</p>
 </td><td class="codes" /><pre class="brush: clojure">(def players (ref {}))
 (def players-by-name (ref {}))
 (def match-tracker (atom {}))</pre></tr><tr><td class="docs"><p>The data structure for all the players that are submitted, used to track wins etc.</p>
@@ -3040,38 +3035,38 @@ is used to track and schedule all the required matches.</p>
      (create-match-up! player1 player2 true))
   ([player1 player2 match1?]
      (let [match-id (str (:namespace player1) &quot;-&quot; (:namespace player2))]
-       (swap! match-tracker assoc match-id 0)
+       (swap! match-tracker assoc match-id (atom 0))
        (if match1? (recur player2 player1 false)))))</pre></tr><tr><td class="docs"><p>Set of functions to update the server state after matches have been played.</p>
 </td><td class="codes" /><pre class="brush: clojure">(defn update-match-tracker! [new-player]
   (doseq [player (vals @players)]
     (if-not (same-players? player new-player)
       (create-match-up! player new-player))))</pre></tr><tr><td class="docs">
 </td><td class="codes" /><pre class="brush: clojure">(defn update-winner! [winner-ns]
-  (println (str &quot;Winner is &quot; winner-ns))
   (dosync
    (alter players update-in [winner-ns :won] inc)
    (alter players update-in [winner-ns :played] inc)))</pre></tr><tr><td class="docs">
 </td><td class="codes" /><pre class="brush: clojure">(defn update-loser! [loser-ns]
-  (println (str &quot;Loser is &quot; loser-ns))
   (dosync
    (alter players update-in [loser-ns :lost] inc)
    (alter players update-in [loser-ns :played] inc)))</pre></tr><tr><td class="docs">
 </td><td class="codes" /><pre class="brush: clojure">(defn record-match-result!
   [player1-ns player2-ns winner]
-  (println (str &quot;winner key is &quot; winner))
   (cond
    (= :player1 winner) (do (update-winner! player1-ns)
                            (update-loser! player2-ns))
    (= :player2 winner) (do (update-winner! player2-ns)
-                           (update-loser! player1-ns))))</pre></tr><tr><td class="docs"><p>Used to keep going if all the matches haven't been played.</p>
+                           (update-loser! player1-ns))))</pre></tr><tr><td class="docs">
+</td><td class="codes" /><pre class="brush: clojure">(defn- inc-if-below [limit current-value]
+  (if (&lt;= current-value limit)
+    (inc current-value)
+    current-value))</pre></tr><tr><td class="docs"><p>Used to keep going if all the matches haven't been played.</p>
 </td><td class="codes" /><pre class="brush: clojure">(defn inc-match-count-if-below-limit!
   &quot;Returns truthy if the number of matches was incremented, else falsey.&quot;
   [match-id limit]
-  (let [current-match-tracker @match-tracker
-        num-matches (current-match-tracker match-id)]
-    (if (&lt; num-matches limit)
-      (compare-and-set! match-tracker current-match-tracker
-                        (assoc current-match-tracker match-id (inc num-matches))))))</pre></tr><tr><td class="docs"><p>Kicks off a match using the engine.</p>
+  (let [new-total (swap! (@match-tracker match-id) (partial inc-if-below limit))]
+    (if (&lt;= new-total limit)
+      new-total
+      nil)))</pre></tr><tr><td class="docs"><p>Kicks off a match using the engine.</p>
 </td><td class="codes" /><pre class="brush: clojure">(defn play-match! [match-id limit]
   ;; check to see if we need to play the match by atomically checking the
   ;; number of matches against the limit
@@ -3080,7 +3075,6 @@ is used to track and schedule all the required matches.</p>
           player-map @players
           player1 (player-map player1-ns)
           player2 (player-map player2-ns)]
-      (println &quot;----------------------------------------------&quot;)
       (let [{:keys [winner loser] :as game} (engine/play (:impl player1) (:impl player2))]
         (record-match-result! player1-ns player2-ns winner)
         (recur match-id limit)))))</pre></tr><tr><td class="docs"><p>Triggered any time a new player is added.</p>
@@ -3091,9 +3085,8 @@ is used to track and schedule all the required matches.</p>
     (play-match! match-id limit)))</pre></tr><tr><td class="docs">
 </td><td class="codes" /><pre class="brush: clojure">(defn async-play-all-outstanding-games
   [limit]
-  (.start (Thread. (partial play-all-outstanding-games limit))))</pre></tr><tr><td class="docs">
+  (.. (Thread. (partial play-all-outstanding-games limit)) start))</pre></tr><tr><td class="docs">
 </td><td class="codes" /><pre class="brush: clojure">(defn player-exists? [name]
-  (println @players-by-name)
   (@players-by-name name))</pre></tr><tr><td class="docs"><p>Called when a player is submitted.</p>
 </td><td class="codes" /><pre class="brush: clojure">(defn register-player!
   [player player-ns code]
@@ -3102,7 +3095,6 @@ is used to track and schedule all the required matches.</p>
         registered-player (if already-registered 
                             (assoc (@players (str player-ns)) :updated (java.util.Date.))
                             (make-registered-player player player-ns code))]
-    (println registered-player)
     (dosync
       (alter players assoc (str player-ns) registered-player)
       (alter players-by-name assoc (:name registered-player) registered-player))
@@ -3111,9 +3103,7 @@ is used to track and schedule all the required matches.</p>
 </td><td class="codes" /><pre class="brush: clojure">(register-player! (core/make-random-cpu-player &quot;cpu1&quot;) 'battleships.core &quot;HIDDEN&quot;)</pre></tr><tr><td class="docs">
 </td><td class="codes" /><pre class="brush: clojure">(defn existing-player-id-matches? [name id]
   (if-let [existing-player (player-exists? name)]
-    (do
-      (println (str (:namespace existing-player) &quot; matches &quot; ))
-      (= (symbol id) (:namespace existing-player)))))</pre></tr><tr><td class="docs">
+    (= (symbol id) (:namespace existing-player))))</pre></tr><tr><td class="docs">
 </td><td class="codes" /><pre class="brush: clojure">(defn http-response 
   ([body]
     (http-response body 200))
@@ -3126,7 +3116,7 @@ is used to track and schedule all the required matches.</p>
   [player-ns nm code]
   (let [player (loader/make-player player-ns nm)]
     (register-player! player player-ns code)
-    (async-play-all-outstanding-games 10)
+    (async-play-all-outstanding-games num-matches)
     (str player-ns)))</pre></tr><tr><td class="docs"><p>This is used when a new player is added.</p>
 </td><td class="codes" /><pre class="brush: clojure">(defn create-player
   &quot;Creates a new player, unless a player of that name already exists.&quot;
@@ -3151,13 +3141,16 @@ already exist, or the id doesn't match the player's id.&quot;
         (http-error (str &quot;Failed: error while loading code&quot;)))
       (http-error (str &quot;Failed: id &quot; id &quot; does not match existing player's id&quot;)))
     (http-error (str &quot;Failed: no player &quot; nm &quot; found to update.&quot;))))</pre></tr><tr><td class="docs">
-</td><td class="codes" /><pre class="brush: clojure">(defn view-player [name]
-  (if (player-exists? name)
-    (view/make-player-view (@players-by-name name))
-    (str name &quot; not found&quot;)))</pre></tr><tr><td class="docs"><p>These are the various pages the server provides.</p>
+</td><td class="codes" /><pre class="brush: clojure">(defn- local-request? [request]
+  (= &quot;127.0.0.1&quot; (:remote-addr request)))</pre></tr><tr><td class="docs">
+</td><td class="codes" /><pre class="brush: clojure">(defn view-player [name request]
+  (if (local-request? request) 
+    (if (player-exists? name)
+      (view/make-player-view (@players-by-name name))
+      (str name &quot; not found&quot;))))</pre></tr><tr><td class="docs"><p>These are the various pages the server provides.</p>
 </td><td class="codes" /><pre class="brush: clojure">(defroutes main-routes
-  (GET &quot;/&quot; [] (view/main-page @players))
-  (GET &quot;/view&quot; {:keys [params]} (view-player (:name params)))
+  (GET &quot;/&quot; request (view/main-page @players (local-request? request)))
+  (GET &quot;/view&quot; {:keys [params] :as request} (view-player (:name params) request))
   (POST &quot;/create&quot; {:keys [body params] :as request} (create-player body
                                                             (:name params)))
   (POST &quot;/update&quot; {:keys [body params] :as request} (update-player body
@@ -3169,40 +3162,42 @@ already exist, or the id doesn't match the player's id.&quot;
   (handler/site main-routes))</pre></tr><tr><td class="spacer docs">&nbsp;</td><td class="codes" /></tr><tr><td class="docs"><div class="docs-header"><a class="anchor" href="#battleships.view" name="battleships.view"><h1 class="project-name">battleships.view</h1><a class="toc-link" href="#toc">toc</a></a></div></td><td class="codes" /></tr><tr><td class="docs">
 </td><td class="codes" /><pre class="brush: clojure">(ns battleships.view
   (:use [hiccup.core]))</pre></tr><tr><td class="docs">
-</td><td class="codes" /><pre class="brush: clojure">(defn make-player-table [players]
+</td><td class="codes" /><pre class="brush: clojure">(defn make-player-table [players local?]
   (html [:table
          [:tr [:th &quot;Name&quot;] [:th &quot;Played&quot;] [:th &quot;Won&quot;] [:th &quot;Lost&quot;]]
          (for [{:keys [name played won lost]} (sort (fn [x y] (&gt; (:won x) (:won y))) (vals players))]
-           [:tr [:td [:a {:href (str &quot;/view?name=&quot;name)} name]] [:td {:align &quot;center&quot;} played]
+           [:tr [:td (if local? [:a {:href (str &quot;/view?name=&quot;name)} name] name)] [:td {:align &quot;center&quot;} played]
             [:td {:align &quot;center&quot;} won] [:td {:align &quot;center&quot;} lost]])]))</pre></tr><tr><td class="docs">
 </td><td class="codes" /><pre class="brush: clojure">(defn make-player-view [registered-player]
   (html [:h2 (:name registered-player) ]
         [:div &quot;Created: &quot; (:created registered-player)]
         [:div &quot;Updated: &quot; (:updated registered-player)]
         [:pre (:code registered-player)]))</pre></tr><tr><td class="docs">
-</td><td class="codes" /><pre class="brush: clojure">(defn main-page [players]
-  (html [:h1 &quot;Battleships&quot;]
-        (make-player-table players)))</pre></tr><tr><td class="spacer docs">&nbsp;</td><td class="codes" /></tr><tr><td class="docs"><div class="docs-header"><a class="anchor" href="#battleships.demo" name="battleships.demo"><h1 class="project-name">battleships.demo</h1><a class="toc-link" href="#toc">toc</a></a></div></td><td class="codes" /></tr><tr><td class="docs">
+</td><td class="codes" /><pre class="brush: clojure">(defn main-page [players local?]
+  (html
+    [:head [:meta {:HTTP-EQUIV &quot;Refresh&quot; :CONTENT &quot;1&quot;}]]
+    [:body 
+     [:h1 &quot;Battleships&quot;]
+     (make-player-table players local?)]))</pre></tr><tr><td class="spacer docs">&nbsp;</td><td class="codes" /></tr><tr><td class="docs"><div class="docs-header"><a class="anchor" href="#battleships.demo" name="battleships.demo"><h1 class="project-name">battleships.demo</h1><a class="toc-link" href="#toc">toc</a></a></div></td><td class="codes" /></tr><tr><td class="docs">
 </td><td class="codes" /><pre class="brush: clojure">(ns battleships.demo)</pre></tr><tr><td class="docs"><p>This is an example of how to create a player to submit to the server.
 The entire namespace is submitted to the server.
 You submit the file using the submit function in the client namespace.</p>
-</td><td class="codes" /></tr><tr><td class="docs">
-</td><td class="codes" /><pre class="brush: clojure">(def ship-positions {:aircraft-carrier {:square &quot;a1&quot; :orientation :h}
-                     :battleship {:square &quot;b1&quot; :orientation :h}
-                     :destroyer {:square &quot;c1&quot; :orientation :h}
-                     :submarine {:square &quot;d1&quot; :orientation :h} 
-                     :patrol-boat {:square &quot;e1&quot; :orientation :h}})</pre></tr><tr><td class="docs"><p>The ship is a map which represents the ship. You must return a map with the square you want to place it, and the orientation (:v is vertical, :h is horizontal)</p>
+</td><td class="codes" /></tr><tr><td class="docs"><p>Generates a random valid coordinate.</p>
+</td><td class="codes" /><pre class="brush: clojure">(defn- random-coord 
+  []
+  (let [rows [&quot;A&quot; &quot;B&quot; &quot;C&quot; &quot;D&quot; &quot;E&quot; &quot;F&quot; &quot;G&quot; &quot;H&quot; &quot;I&quot; &quot;J&quot;]
+        columns (vec (range 1 11))]
+    (str (rows (rand-int 10))
+         (columns (rand-int 10)))))</pre></tr><tr><td class="docs"><p>Generates a random valid orientation.</p>
+</td><td class="codes" /><pre class="brush: clojure">(defn- random-orientation 
+  []
+  ([:h :v] (rand-int 2)))</pre></tr><tr><td class="docs"><p>The ship is a map which represents the ship. You must return a map with the square you want to place it, and the orientation (:v is vertical, :h is horizontal)</p>
 </td><td class="codes" /><pre class="brush: clojure">(defn place-ship
   [ship]
-  (let [pos (ship-positions (:key ship))]
-    pos))</pre></tr><tr><td class="docs">
-</td><td class="codes" /><pre class="brush: clojure">(def rows [&quot;A&quot; &quot;B&quot; &quot;C&quot; &quot;D&quot; &quot;E&quot; &quot;F&quot; &quot;G&quot; &quot;H&quot; &quot;I&quot; &quot;J&quot;])
-(def columns (vec (range 1 11)))</pre></tr><tr><td class="docs"><p>Where do you want to attack next?</p>
+  {:square (random-coord) :orientation (random-orientation)})</pre></tr><tr><td class="docs"><p>Where do you want to attack next?</p>
 </td><td class="codes" /><pre class="brush: clojure">(defn next-shot
   [context opponent-context]
-  (let [next-shot (str (rows (rand-int 10))
-                       (columns (rand-int 10)))]
-    next-shot))</pre></tr><tr><td class="spacer docs">&nbsp;</td><td class="codes" /></tr><tr><td class="docs"><div class="docs-header"><a class="anchor" href="#battleships.monkey" name="battleships.monkey"><h1 class="project-name">battleships.monkey</h1><a class="toc-link" href="#toc">toc</a></a></div></td><td class="codes" /></tr><tr><td class="docs">
+  (random-coord))</pre></tr><tr><td class="spacer docs">&nbsp;</td><td class="codes" /></tr><tr><td class="docs"><div class="docs-header"><a class="anchor" href="#battleships.monkey" name="battleships.monkey"><h1 class="project-name">battleships.monkey</h1><a class="toc-link" href="#toc">toc</a></a></div></td><td class="codes" /></tr><tr><td class="docs">
 </td><td class="codes" /><pre class="brush: clojure">(ns battleships.monkey)</pre></tr><tr><td class="docs"><p>This is a chaos monkey, and implementation of the player
 that does bad things.</p>
 </td><td class="codes" /></tr><tr><td class="docs">
@@ -3250,26 +3245,27 @@ cpu lost!</p>
   &quot;player-ns is the path to the file that contains the namespace definition. This is for use when developing the player locally and want to make sure that it can play a game.&quot;
   [player-ns-file]
   (if-let [player-ns (loader/eval-ns player-ns-file)]
-    (do
-      (if (loader/valid-player-ns? player-ns)
-        (core/test-player (loader/make-player player-ns))
-        (println &quot;invalid player&quot;))
-      (loader/cleanup-ns player-ns))))</pre></tr><tr><td class="docs">
+    (if (loader/valid-player-ns? player-ns)
+        (let [game (core/test-player (loader/make-player player-ns))]
+          (loader/cleanup-ns player-ns)
+          game)
+        (loader/cleanup-ns player-ns))))</pre></tr><tr><td class="docs">
 </td><td class="codes" /><pre class="brush: clojure">(defn- post-to-server
-  [player-ns-file name id server-address]
-  (if (loader/valid-player-ns? (loader/eval-ns player-ns-file))
-    (do
-      (println (str &quot;Submitting to &quot; server-address))
-      (http/post server-address {:body (slurp player-ns-file)
-                                 :content-type &quot;text/plain&quot;
-                                 :query-params {:name name :id id}}))))</pre></tr><tr><td class="docs"><p>Once you are happy with the player, use this to submit to the server.</p>
+  [player-ns-file name id server path]
+  (let [server-address (str server path)] 
+    (if (loader/valid-player-ns? (loader/eval-ns player-ns-file))
+      (do
+        (println (str &quot;Submitting to &quot; server-address))
+        (http/post server-address {:body (slurp player-ns-file)
+                                   :content-type &quot;text/plain&quot;
+                                   :query-params {:name name :id id}})))))</pre></tr><tr><td class="docs"><p>Once you are happy with the player, use this to submit to the server.</p>
 
 <p>Example usage:</p>
 
 <pre>
 => (submit-player "src/battleships/demo.clj" 
 "My Player" 
-"http://localhost:3000/create")
+"http://localhost:3000")
 Submitting to http://localhost:3000/create
 {:status 200, :headers {"date" "Wed, 16 Nov 2011 19:51:17 GMT", "content-type" "text/html; charset=utf-8", "connection" "close", "server" "Jetty(6.1.25)"}, :body "player1023"}
 </pre>
@@ -3279,23 +3275,75 @@ Whether or not you want to update is a different matter. From a tactical point o
 </td><td class="codes" /><pre class="brush: clojure">(defn submit-player
   &quot;Submit your player to the server.&quot;
   ([player-ns-file name]
-     (submit-player player-ns-file name &quot;http://localhost:3000/create&quot;))
+     (submit-player player-ns-file name &quot;http://localhost:3000&quot;))
   ([player-ns-file name server-address]
-     (post-to-server player-ns-file name nil server-address)))</pre></tr><tr><td class="docs"><p>If you do want to update a player, use this.</p>
+     (post-to-server player-ns-file name nil server-address &quot;/create&quot;)))</pre></tr><tr><td class="docs"><p>If you do want to update a player, use this.</p>
 
 <pre>
 Example usage:
 => (update-player "src/battleships/demo.clj" 
 "My Player" 
 "player1023" 
-"http://localhost:3000/update")
+"http://localhost:3000")
 Submitting to http://localhost:3000/update
 {:status 200, :headers {"date" "Wed, 16 Nov 2011 19:54:27 GMT", "content-type" "text/html; charset=utf-8", "connection" "close", "server" "Jetty(6.1.25)"}, :body "player1023"}
 </pre>
 </td><td class="codes" /><pre class="brush: clojure">(defn update-player
   &quot;Use this when you want to overwrite your current player. You need the id returned from the original submission.&quot;
   ([player-ns-file name id]
-     (update-player player-ns-file name id &quot;http://localhost:3000/update&quot;))
+     (update-player player-ns-file name id &quot;http://localhost:3000&quot;))
   ([player-ns-file name id server-address]
-     (post-to-server player-ns-file name id server-address)))</pre></tr><tr><td class="spacer docs">&nbsp;</td><td class="codes" /></tr></table><div class="footer">Generated by <a href="https://github.com/fogus/marginalia">Marginalia</a>.&nbsp;&nbsp;Syntax highlighting provided by Alex Gorbatchev's <a href="http://alexgorbatchev.com/SyntaxHighlighter/">SyntaxHighlighter</a><div id="floating-toc"><ul><li class="floating-toc-li" id="floating-toc_battleships.board">battleships.board</li><li class="floating-toc-li" id="floating-toc_battleships.game">battleships.game</li><li class="floating-toc-li" id="floating-toc_battleships.engine">battleships.engine</li><li class="floating-toc-li" id="floating-toc_battleships.core">battleships.core</li><li class="floating-toc-li" id="floating-toc_battleships.loader">battleships.loader</li><li class="floating-toc-li" id="floating-toc_battleships.server">battleships.server</li><li class="floating-toc-li" id="floating-toc_battleships.view">battleships.view</li><li class="floating-toc-li" id="floating-toc_battleships.demo">battleships.demo</li><li class="floating-toc-li" id="floating-toc_battleships.monkey">battleships.monkey</li><li class="floating-toc-li" id="floating-toc_battleships.client">battleships.client</li></ul></div></div><script type="text/javascript">SyntaxHighlighter.defaults['gutter'] = false;
+     (post-to-server player-ns-file name id server-address &quot;/update&quot;)))</pre></tr><tr><td class="docs">
+</td><td class="codes" /><pre class="brush: clojure">(defn file-exists? [file]
+  (.. (java.io.File. file) exists))</pre></tr><tr><td class="docs">
+</td><td class="codes" /><pre class="brush: clojure">(defn spit-java-policy-file! 
+  &quot;Creates the policy file that we need to use Clojail sandbox.&quot;
+  [java-policy-file]
+  (spit java-policy-file 
+&quot;grant {
+    permission java.security.AllPermission;
+};&quot;))</pre></tr><tr><td class="docs">
+</td><td class="codes" /><pre class="brush: clojure">(defn create-java-policy-file!
+  &quot;Helper function which creates the policy file in the user home directory&quot;
+  []
+  (let [java-policy-file (str (System/getProperty &quot;user.home&quot;) &quot;/.java.policy&quot;)]
+    (when-not (file-exists? java-policy-file)
+      (println &quot;Creating &quot; java-policy-file &quot;...&quot;)
+      (spit-java-policy-file! java-policy-file))
+    (if-not (file-exists? java-policy-file)
+      (throw (IllegalStateException. (str java-policy-file &quot; not created!&quot;))))))</pre></tr><tr><td class="spacer docs">&nbsp;</td><td class="codes" /></tr><tr><td class="docs"><div class="docs-header"><a class="anchor" href="#battleships.replay" name="battleships.replay"><h1 class="project-name">battleships.replay</h1><a class="toc-link" href="#toc">toc</a></a></div></td><td class="codes" /></tr><tr><td class="docs"><p>Provides a function to generate 2 players from a previous game i.e. the game data structure
+that is returned by the engine.</p>
+</td><td class="codes" /><pre class="brush: clojure">(ns battleships.replay
+  (:import [battleships.engine ShipPosition])
+  (:require [battleships.engine :as engine]))</pre></tr><tr><td class="docs">
+</td><td class="codes" /><pre class="brush: clojure">(defn- make-ship-chooser 
+  [ships]
+  (fn [{:keys [key] :as ship}]    
+    (let [ship-data (ships key)]
+      {:square (:coord ship-data) :orientation (:orientation ship-data)})))</pre></tr><tr><td class="docs">
+</td><td class="codes" /><pre class="brush: clojure">(defn- make-shot-chooser
+  [shots]
+  (let [index (atom -1)]
+    (fn []
+      (shots (swap! index inc)))))</pre></tr><tr><td class="docs"><p>Builds the player from the game.</p>
+</td><td class="codes" /><pre class="brush: clojure">(defn- build
+  [player-key game]
+  (let [ship-chooser-fn (make-ship-chooser (get-in game [player-key :ships]))
+        shot-chooser-fn (make-shot-chooser (get-in game [player-key :context :shots]))
+        name (get-in game [player-key :name])] 
+    (reify engine/Player
+      (get-name [this] name)
+      (bot? [this] true)
+      (ship-position [this ship]
+                     (let [pos (ship-chooser-fn ship)]
+                       (ShipPosition. (:square pos) (:orientation pos))))
+      (next-shot [this player-context opponent-context]
+                (shot-chooser-fn))         
+      (you-won [this {:keys [last-result hits ships-sunk shots]} opponent-context]
+                (println name &quot; won in &quot; (count shots) &quot; shots!&quot;))
+      (you-lost [this {:keys [last-result hits ships-sunk shots]} opponent-context]
+                (println name &quot; lost in &quot; (count shots) &quot; shots!&quot;)))))</pre></tr><tr><td class="docs"><p>Builds the 2 players based on the shots etc from the game.</p>
+</td><td class="codes" /><pre class="brush: clojure">(defn build-players-from-game 
+  [from-game]
+  [(build :player1 from-game) (build :player2 from-game)])</pre></tr><tr><td class="spacer docs">&nbsp;</td><td class="codes" /></tr></table><div class="footer">Generated by <a href="https://github.com/fogus/marginalia">Marginalia</a>.&nbsp;&nbsp;Syntax highlighting provided by Alex Gorbatchev's <a href="http://alexgorbatchev.com/SyntaxHighlighter/">SyntaxHighlighter</a><div id="floating-toc"><ul><li class="floating-toc-li" id="floating-toc_battleships.board">battleships.board</li><li class="floating-toc-li" id="floating-toc_battleships.game">battleships.game</li><li class="floating-toc-li" id="floating-toc_battleships.engine">battleships.engine</li><li class="floating-toc-li" id="floating-toc_battleships.core">battleships.core</li><li class="floating-toc-li" id="floating-toc_battleships.loader">battleships.loader</li><li class="floating-toc-li" id="floating-toc_battleships.server">battleships.server</li><li class="floating-toc-li" id="floating-toc_battleships.view">battleships.view</li><li class="floating-toc-li" id="floating-toc_battleships.demo">battleships.demo</li><li class="floating-toc-li" id="floating-toc_battleships.monkey">battleships.monkey</li><li class="floating-toc-li" id="floating-toc_battleships.client">battleships.client</li><li class="floating-toc-li" id="floating-toc_battleships.replay">battleships.replay</li></ul></div></div><script type="text/javascript">SyntaxHighlighter.defaults['gutter'] = false;
        SyntaxHighlighter.all()</script></body></html>

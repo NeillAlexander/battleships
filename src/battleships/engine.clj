@@ -42,7 +42,8 @@
        (if-not (and (> num-attempts# ~(:limited-to limit-map)) ~(:when limit-map))
          (if-let [result# (try 
                             ~attempt-clause
-                            (catch Exception e# (println "Caught Exception: " (.getMessage e#))))]
+                            (catch Exception e# (println "Caught Exception: " (.getMessage e#))
+                              (.printStackTrace e#)))]
            result#
            (recur (inc num-attempts#)))
          ~(first else-clause)))))
@@ -89,8 +90,10 @@
 
 (defn new-player-context [game player-key]
   (assoc-in game [player-key :context]
-            {:last-shot nil, :last-result nil, :hits [],
-             :misses [], :ships-sunk []}))
+            {:shots []
+             :last-result nil, 
+             :hits [],
+             :ships-sunk []}))
 
 (defn calc-result [result sunk]
   (cond
@@ -110,14 +113,14 @@
   "Update the player context with the result of the last shot."
   [game player-key coord result sunk]
   (let [context (get-in game [player-key :context])
-        hits (conj-data-in-context context :hits coord result)
-        misses (conj-data-in-context context :misses coord (not result))
+        shots (conj-data-in-context context :shots coord true)
+        hits (conj-data-in-context context :hits coord result)        
         ships-sunk (conj-data-in-context  context :ships-sunk sunk sunk)]
-    (-> (assoc-in game [player-key :context :last-shot] coord)
-        (assoc-in [player-key :context :last-result] (calc-result result sunk))
-        (assoc-in [player-key :context :hits] hits)
-        (assoc-in [player-key :context :misses] misses)
-        (assoc-in [player-key :context :ships-sunk] ships-sunk))))
+    (-> game 
+      (assoc-in [player-key :context :last-result] (calc-result result sunk))
+      (assoc-in [player-key :context :hits] hits)
+      (assoc-in [player-key :context :shots] shots)
+      (assoc-in [player-key :context :ships-sunk] ships-sunk))))
 
 (defn init-game [player1 player2]
   (-> (game/new-game (get-name player1) (get-name player2))
