@@ -21,6 +21,9 @@
 (def players-by-name (ref {}))
 (def match-tracker (atom {}))
 
+(defn num-players [] (count @players))
+(defn num-matchups [] (count @match-tracker))
+
 ;; The data structure for all the players that are submitted, used to track wins etc.
 (defn make-registered-player [player player-ns code]
   (with-open [sw (java.io.StringWriter.)]
@@ -126,8 +129,19 @@
     (when-not already-registered
       (update-match-tracker! registered-player))))
 
-;; always have the computer in here to play against people
-(register-player! (core/make-random-cpu-player "cpu1") 'battleships.core "HIDDEN")
+(defn create-default-cpu-player []
+  ;; always have the computer in here to play against people
+  (register-player! (core/make-random-cpu-player "cpu1") 'battleships.core "HIDDEN"))
+
+(defn reset-state! 
+  []
+  (dosync
+    (ref-set players {})
+    (ref-set players-by-name {})
+    (reset! match-tracker {}))
+  (create-default-cpu-player))
+
+(reset-state!)
 
 (defn existing-player-id-matches? [name id]
   (if-let [existing-player (player-exists? name)]

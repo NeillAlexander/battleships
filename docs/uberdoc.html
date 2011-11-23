@@ -3015,7 +3015,9 @@ note this means each will play each other 500 times as player1, and 500 times as
 </td><td class="codes" /><pre class="brush: clojure">(def num-matches 500) </pre></tr><tr><td class="docs"><p>Server state</p>
 </td><td class="codes" /><pre class="brush: clojure">(def players (ref {}))
 (def players-by-name (ref {}))
-(def match-tracker (atom {}))</pre></tr><tr><td class="docs"><p>The data structure for all the players that are submitted, used to track wins etc.</p>
+(def match-tracker (atom {}))</pre></tr><tr><td class="docs">
+</td><td class="codes" /><pre class="brush: clojure">(defn num-players [] (count @players))
+(defn num-matchups [] (count @match-tracker))</pre></tr><tr><td class="docs"><p>The data structure for all the players that are submitted, used to track wins etc.</p>
 </td><td class="codes" /><pre class="brush: clojure">(defn make-registered-player [player player-ns code]
   (with-open [sw (java.io.StringWriter.)]
     (pprint code sw)
@@ -3099,8 +3101,18 @@ is used to track and schedule all the required matches.</p>
       (alter players assoc (str player-ns) registered-player)
       (alter players-by-name assoc (:name registered-player) registered-player))
     (when-not already-registered
-      (update-match-tracker! registered-player))))</pre></tr><tr><td class="docs"><p>always have the computer in here to play against people</p>
-</td><td class="codes" /><pre class="brush: clojure">(register-player! (core/make-random-cpu-player &quot;cpu1&quot;) 'battleships.core &quot;HIDDEN&quot;)</pre></tr><tr><td class="docs">
+      (update-match-tracker! registered-player))))</pre></tr><tr><td class="docs">
+</td><td class="codes" /><pre class="brush: clojure">(defn create-default-cpu-player []
+  ;; always have the computer in here to play against people
+  (register-player! (core/make-random-cpu-player &quot;cpu1&quot;) 'battleships.core &quot;HIDDEN&quot;))</pre></tr><tr><td class="docs">
+</td><td class="codes" /><pre class="brush: clojure">(defn reset-state! 
+  []
+  (dosync
+    (ref-set players {})
+    (ref-set players-by-name {})
+    (reset! match-tracker {}))
+  (create-default-cpu-player))</pre></tr><tr><td class="docs">
+</td><td class="codes" /><pre class="brush: clojure">(reset-state!)</pre></tr><tr><td class="docs">
 </td><td class="codes" /><pre class="brush: clojure">(defn existing-player-id-matches? [name id]
   (if-let [existing-player (player-exists? name)]
     (= (symbol id) (:namespace existing-player))))</pre></tr><tr><td class="docs">
