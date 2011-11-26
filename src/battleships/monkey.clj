@@ -3,12 +3,6 @@
 ;; This is a chaos monkey, and implementation of the player
 ;; that does bad things.
 
-(def ship-positions {:aircraft-carrier {:square "a1" :orientation :h}
-                     :battleship {:square "b1" :orientation :h}
-                     :destroyer {:square "c1" :orientation :h}
-                     :submarine {:square "d1" :orientation :h} 
-                     :patrol-boat {:square "e1" :orientation :h}})
-
 (defn chaos-fn [normal-fn & args]
   (condp = (rand-nth [:normal :nil :exception :rand-number :rand-string])
     :normal (apply normal-fn args)
@@ -19,8 +13,13 @@
 
 (defn normal-place-ship
   "The ship is a map which represents the ship. You must return a map with the square you want to place it, and the orientation (:v is vertical, :h is horizontal)"
-  [ship]
-  (let [pos (ship-positions (:key ship))]
+  [ship]  
+  (let [ship-positions {:aircraft-carrier {:square "a1" :orientation :h}
+                        :battleship {:square "b1" :orientation :h}
+                        :destroyer {:square "c1" :orientation :h}
+                        :submarine {:square "d1" :orientation :h} 
+                        :patrol-boat {:square "e1" :orientation :h}}
+        pos (ship-positions (:key ship))]
     pos))
 
 (defn place-ship
@@ -28,13 +27,12 @@
   [ship]
   (chaos-fn normal-place-ship ship))
 
-(def rows ["A" "B" "C" "D" "E" "F" "G" "H" "I" "J"])
-(def columns (vec (range 1 11)))
-
 (defn normal-next-shot
   "Where do you want to attack next?"
   [context opponent-context]
-  (let [next-shot (str (rows (rand-int 10))
+  (let [rows ["A" "B" "C" "D" "E" "F" "G" "H" "I" "J"]
+        columns (vec (range 1 11))
+        next-shot (str (rows (rand-int 10))
                        (columns (rand-int 10)))]
     next-shot))
 

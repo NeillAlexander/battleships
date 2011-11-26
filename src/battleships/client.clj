@@ -68,10 +68,10 @@
   ([player-ns-file name id server-address]
      (post-to-server player-ns-file name id server-address "/update")))
 
-(defn file-exists? [file]
+(defn- file-exists? [file]
   (.. (java.io.File. file) exists))
 
-(defn spit-java-policy-file! 
+(defn- spit-java-policy-file! 
   "Creates the policy file that we need to use Clojail sandbox."
   [java-policy-file]
   (spit java-policy-file 

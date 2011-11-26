@@ -24,10 +24,10 @@
   (you-lost [this player-context opponent-context]
     "Called when this player lost the game."))
 
-(defn valid-player? [player]
+(defn- valid-player? [player]
   (satisfies? Player player))
 
-(defn ensure-valid-players [player1 player2]
+(defn- ensure-valid-players [player1 player2]
   (if-not (and (valid-player? player1)
                (valid-player? player2))
     (throw (IllegalArgumentException. "Invalid players"))))
