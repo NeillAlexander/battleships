@@ -1,18 +1,5 @@
 Mandatory:
-	- Look to tidy up the code - any scope for macros to improve things?
-		Think about Paul Graham's comment that patterns in code are a sign that he hasn't abstracted out enough.
-		- board @done
-		- client @done
-		- core @done
-		- demo @done
-		- engine @done
-		- game @done
-		- loader @done
-		- monkey @done
-		- replay @done
-		- server
-		- view @done
-		
+
 Optional:
 	- provide a way to have a tournament
 	- in tournament mode, provide a way to watch players go against each other	

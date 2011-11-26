@@ -2,14 +2,15 @@
   (:use [battleships.server]
         [battleships.engine :as engine]
         [battleships.replay :as replay]
+        [battleships.server-state :as state]
         [clojure.test]))
 
 (deftest test-create-player
-  (reset-state!)
+  (state/reset-state!)
   (let [player-id (create-player (java.io.File. "src/battleships/demo.clj") "Test")]
     (is (= 2 (num-players)))
     (is (= 2 (num-matchups)))
-    (let [registered-players @players
+    (let [registered-players (state/get-players)
           p1 (:impl (val (first registered-players)))
           p2 (:impl (val (second registered-players)))
           game (engine/play p1 p2)]
